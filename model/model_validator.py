@@ -1,0 +1,2 @@
+class ModelValidation(ModelExecutionStrategy):
+    pass
