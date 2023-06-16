@@ -1,27 +1,16 @@
 from abc import ABC, abstractmethod
+
 from .model.model_config import ModelConfig
+from .model.model_trainer import ModelTraining
+from .model.model_validator import ModelValidation
+from .model.model_predictor import ModelPrediction
+from .model.model_optimizer import ModelOptimization
 
 
 class ModelExecutionStrategy(ABC):
     @abstractmethod
     def execute(self):
         pass
-
-
-class ModelTraining(ModelExecutionStrategy):
-    pass
-
-
-class ModelValidation(ModelExecutionStrategy):
-    pass
-
-
-class ModelOptimization(ModelExecutionStrategy):
-    pass
-
-
-class ModelPrediction(ModelExecutionStrategy):
-    pass
 
 
 class ModelRunner:

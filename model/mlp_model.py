@@ -2,9 +2,9 @@ import torch.nn as nn
 
 
 class MLP(nn.Module):
-    '''
+    """
     Multilayer Perceptron for regression.
-    '''
+    """
 
     def __init__(self, layers, activation_functions):
         super(MLP, self).__init__()
