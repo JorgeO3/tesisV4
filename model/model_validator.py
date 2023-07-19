@@ -2,4 +2,9 @@ from model_execution_strategy import ModelExecutionStrategy
 
 
 class ModelValidation(ModelExecutionStrategy):
-    pass
+    
+    def __init__(self) -> None:
+        pass
+
+    def execute(self):
+        pass
