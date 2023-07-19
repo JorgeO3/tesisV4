@@ -37,7 +37,7 @@ def main():
     ModelConfig.initialize()
     model_config = ModelConfig()
 
-    mode = "training"
+    mode = "optimization"
 
     execution_strategy = ModelStrategyFactory.get_model(mode, model_config)
     if execution_strategy is not None:

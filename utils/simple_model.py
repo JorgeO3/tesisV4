@@ -73,13 +73,13 @@ class MLP(nn.Module):
     def __init__(self):
         super().__init__()
         self.layers = nn.Sequential(
-            nn.Linear(11, 21),
-            nn.LeakyReLU(),
-            nn.Linear(21, 22),
-            nn.LeakyReLU(),
-            nn.Linear(22, 9),
+            nn.Linear(11, 24),
+            nn.ReLU(),
+            nn.Linear(24, 12),
+            nn.ReLU(),
+            nn.Linear(12, 6),
             nn.Tanh(),
-            nn.Linear(9, 3),
+            nn.Linear(6, 3),
         )
 
     def forward(self, x):
@@ -92,16 +92,16 @@ class MLP(nn.Module):
 if __name__ == '__main__':
     # ================ Params for training =================
     BATCH_SIZE = 8
-    NUM_EPOCHS = 1000
+    NUM_EPOCHS = 100
     TRAIN_SIZE = 0.8
-    WEIGHT_DECAY = 0.0000528953198990119
-    LEARNING_RATE = 0.000058093027922883
+    WEIGHT_DECAY = 0.000528953198990119
+    LEARNING_RATE = 0.058093027922883
     # ========================= // =========================
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    data_path = os.path.join(current_dir, "../data/", 'mohalanobis_data.csv')
-    synthetic_data_path = os.path.join(current_dir, "../data/", 'mohalanobis3.csv')
-    val_data_path = os.path.join(current_dir, "../data/", 'prueba.csv')
+    data_path = os.path.join(current_dir, "../data/", "train_data.csv")
+    synthetic_data_path = os.path.join(current_dir, "../data/", "synthetic_data_cleaned.csv")
+    val_data_path = os.path.join(current_dir, "../data/", "test_data.csv")
 
     data = pd.read_csv(data_path).sample(frac=1).reset_index(drop=True)
     synthetic_data = pd.read_csv(synthetic_data_path).values
