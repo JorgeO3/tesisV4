@@ -53,6 +53,7 @@ class BaseModel:
         history = []
 
         train_loader, test_data = self.generate_dataloader()
+        X_test, y_test = data_processor(test_data)
 
         for i in range(self.num_epochs):
             self.model.train()
@@ -70,9 +71,9 @@ class BaseModel:
 
             self.model.eval()
             with torch.no_grad():
-                y_pred = self.model(self.X_test)
+                y_pred = self.model(X_test)
 
-                mse = self.loss_function(y_pred, self.y_test)
+                mse = self.loss_function(y_pred, y_test)
                 mse = float(mse)
 
                 history.append(mse)
