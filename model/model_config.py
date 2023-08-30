@@ -36,14 +36,17 @@ class ModelConfig:
     CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
     DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     RESPONSE_VARS = ["TS", "WVP", "%E"]
-    INPUT_VARS = ["%Chi", "%Gel", "%Gly", "%Pec", "%Sta", "%Oil", "%W", "%AA", "T(°C)", "%RH", "t(h)"]
+    INPUT_VARS = ["%Chi", "%Gel", "%Gly", "%Pec", "%Sta",
+                  "%Oil", "%W", "%AA", "T(°C)", "%RH", "t(h)"]
 
-    SCALER_PATH = os.path.join(CURRENT_DIR, "data", "scaler.pkl")
-    STUDY_CSV_PATH = os.path.join(CURRENT_DIR, "results", "study.csv")
-    TEST_DATA_PATH = os.path.join(CURRENT_DIR, "data", "test_model.csv")
-    DATA_PATH = os.path.join(CURRENT_DIR, "data", "mohalanobis_data.csv")
-    MANUAL_MODEL_PATH = os.path.join(CURRENT_DIR, "results", "manual_model.pt")
-    SYNTHETIC_DATA_PATH = os.path.join(CURRENT_DIR, "data", "mohalanobis3.csv")
+    SCALER_PATH = os.path.join(CURRENT_DIR, "../data", "scaler.pkl")
+    STUDY_CSV_PATH = os.path.join(CURRENT_DIR, "../results", "study.csv")
+    TEST_DATA_PATH = os.path.join(CURRENT_DIR, "../data", "test_data.csv")
+    DATA_PATH = os.path.join(CURRENT_DIR, "../data", "train_data.csv")
+    MANUAL_MODEL_PATH = os.path.join(
+        CURRENT_DIR, "../results", "manual_model.pt")
+    SYNTHETIC_DATA_PATH = os.path.join(
+        CURRENT_DIR, "../data", "synthetic_data.csv")
     SAVE_SCALER = True
 
     @staticmethod

@@ -35,8 +35,8 @@ class ModelDataset(Dataset):
     '''
 
     def __init__(self, X, y):
-        self.X = torch.tensor(X, dtype=torch.double)
-        self.y = torch.tensor(y, dtype=torch.double)
+        self.X = torch.tensor(X, dtype=torch.float32)
+        self.y = torch.tensor(y, dtype=torch.float32)
 
     def __len__(self):
         return len(self.X)
@@ -75,13 +75,15 @@ class MLP(nn.Module):
     def __init__(self):
         super().__init__()
         self.layers = nn.Sequential(
-            nn.Linear(11, 24),
-            nn.ReLU(),
-            nn.Linear(24, 12),
-            nn.ReLU(),
-            nn.Linear(12, 6),
+            nn.Linear(11, 19),
             nn.Tanh(),
-            nn.Linear(6, 3),
+            nn.Linear(19, 23),
+            nn.ReLU(),
+            nn.Linear(23, 6),
+            nn.Sigmoid(),
+            nn.Linear(6, 18),
+            nn.Sigmoid(),
+            nn.Linear(18, 1),
         )
 
     def forward(self, x):
@@ -91,19 +93,11 @@ class MLP(nn.Module):
         return self.layers(x)
 
 
-if __name__ == '__main__':
-    # ================ Params for training =================
-    BATCH_SIZE = 8
-    NUM_EPOCHS = 100
-    TRAIN_SIZE = 0.8
-    WEIGHT_DECAY = 0.000528953198990119
-    LEARNING_RATE = 0.058093027922883
-    # ========================= // =========================
-
+def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(current_dir, "../data/", "train_data.csv")
     synthetic_data_path = os.path.join(
-        current_dir, "../data/", "synthetic_data_cleaned.csv")
+        current_dir, "../data/", "synthetic_data.csv")
     val_data_path = os.path.join(current_dir, "../data/", "test_data.csv")
 
     data = pd.read_csv(data_path).sample(frac=1).reset_index(drop=True)
@@ -114,10 +108,10 @@ if __name__ == '__main__':
                       axis=0), columns=data.columns)
     df = df.sample(frac=1).reset_index(drop=True)
 
-    y = df[RESPONSE_VARIABLES].values
+    y = df["WVP"].values.reshape(-1, 1)
     X = df.drop(df.columns[[11, 12, 13]], axis=1).values
 
-    y_val = val_data[RESPONSE_VARIABLES].values
+    y_val = val_data["WVP"].values.reshape(-1, 1)
     X_val = val_data.drop(df.columns[[11, 12, 13]], axis=1).values
 
     # Splitting the dataset
@@ -129,15 +123,15 @@ if __name__ == '__main__':
         X_train_raw, y_train, X_test_raw, y_test, X_val, y_val)
 
     # Generate test tensors
-    X_test = torch.tensor(X_test, dtype=torch.double).to(DEVICE)
-    y_test = torch.tensor(y_test, dtype=torch.double).to(DEVICE)
+    X_test = torch.tensor(X_test, dtype=torch.float32).to(DEVICE)
+    y_test = torch.tensor(y_test, dtype=torch.float32).to(DEVICE)
 
     # Generate tensor dataset
     train_dataset = ModelDataset(X_train, y_train)
     train_loader = DataLoader(
         train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
-    mlp = MLP().to(DEVICE).double()
+    mlp = MLP().to(DEVICE)
     loss_function = nn.MSELoss()
     optimizer = torch.optim.Adam(
         mlp.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
@@ -185,8 +179,8 @@ if __name__ == '__main__':
     plt.show()
 
     # Generate test tensors
-    X_val = torch.tensor(X_val, dtype=torch.double)
-    y_val = torch.tensor(y_val, dtype=torch.double)
+    X_val = torch.tensor(X_val, dtype=torch.float32)
+    y_val = torch.tensor(y_val, dtype=torch.float32)
 
     torch.save(mlp, "mlp-model.pth")
 
@@ -197,7 +191,6 @@ if __name__ == '__main__':
             inputs, target = X_val[i].to(DEVICE), y_val[i].to(DEVICE)
             preds = mlp(inputs)
 
-            r2_c = r2_score(preds, target)
             mae = mean_absolute_error(preds, target)
             mape = mean_absolute_percentage_error(preds, target)
             rmse = mean_squared_error(preds, target, False)
@@ -213,18 +206,72 @@ if __name__ == '__main__':
             # Convierte los arrays de numpy en dataframes de pandas
             # Coloca los nombres de tus features
             inputs_df = pd.DataFrame(inputs, columns=[
-                                     "%Chi", "%Gel", "%Gly", "%Pec", "%Sta", "%Oil", "%W", "%AA", "T(°C)", "%RH", "t(h)"])
-            targets_df = pd.DataFrame(targets, columns=["TS", "WVP", "%E"])
-            preds_df = pd.DataFrame(preds, columns=["TS", "WVP", "%E"])
+                "%Chi", "%Gel", "%Gly", "%Pec", "%Sta", "%Oil", "%W", "%AA", "T(°C)", "%RH", "t(h)"])
+            targets_df = pd.DataFrame(targets, columns=["WVP"])
+            preds_df = pd.DataFrame(preds, columns=["WVP"])
 
             # Reducir el número de decimales para una mejor visualización
             pd.options.display.float_format = "{:,.2f}".format
-
-            preds = torch.tensor(preds, dtype=torch.double)
-            targets = torch.tensor(targets, dtype=torch.double)
 
             print(f"MAE: {mae:.4f} - MAPE: {mape:.4f} - RMSE: {rmse:.4f}")
             print("\nInputs:\n", inputs_df.to_string(index=False))
             print("\nTargets:\n", targets_df.to_string(index=False))
             print("\nPredictions:\n", preds_df.to_string(index=False))
+
             print('-' * 60 + '\n')
+
+        inputs, target = X_val.to(DEVICE), y_val.to(DEVICE)
+        preds = mlp(inputs)
+
+        mae = mean_absolute_error(preds, target)
+        mape = mean_absolute_percentage_error(preds, target)
+        rmse = mean_squared_error(preds, target, False)
+        print('=' * 60)
+        print("Total: ")
+        print(f"MAE: {mae:.4f} - MAPE: {mape:.4f} - RMSE: {rmse:.4f}")
+
+
+if __name__ == '__main__':
+    # ================ Params for training =================
+    BATCH_SIZE = 30
+    NUM_EPOCHS = 100
+    TRAIN_SIZE = 0.80013098997437
+    WEIGHT_DECAY = 4.20990601928744E-04
+    LEARNING_RATE = 0.001840750065082665
+    # ========================= // =========================
+
+    main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE)
+
+
+# with torch.no_grad():
+#     for i in range(len(X_val)):
+#         inputs, target = X_val[i].to(DEVICE), y_val[i].to(DEVICE)
+#         preds = mlp(inputs)
+
+#         mae = mean_absolute_error(preds, target)
+#         mape = mean_absolute_percentage_error(preds, target)
+#         rmse = mean_squared_error(preds, target, False)
+
+#         # Desescala las predicciones, los objetivos y las entradas
+#         inputs = scaler_X.inverse_transform(
+#             inputs.cpu().numpy().reshape(1, -1))
+#         preds = scaler_y.inverse_transform(
+#             preds.cpu().numpy().reshape(1, -1))
+#         targets = scaler_y.inverse_transform(
+#             target.cpu().numpy().reshape(1, -1))
+
+#         # Convierte los arrays de numpy en dataframes de pandas
+#         # Coloca los nombres de tus features
+#         inputs_df = pd.DataFrame(inputs, columns=[
+#                                  "%Chi", "%Gel", "%Gly", "%Pec", "%Sta", "%Oil", "%W", "%AA", "T(°C)", "%RH", "t(h)"])
+#         targets_df = pd.DataFrame(targets, columns=["WVP"])
+#         preds_df = pd.DataFrame(preds, columns=["WVP"])
+
+#         # Reducir el número de decimales para una mejor visualización
+#         pd.options.display.float_format = "{:,.2f}".format
+
+#         print(f"MAE: {mae:.4f} - MAPE: {mape:.4f} - RMSE: {rmse:.4f}")
+#         print("\nInputs:\n", inputs_df.to_string(index=False))
+#         print("\nTargets:\n", targets_df.to_string(index=False))
+#         print("\nPredictions:\n", preds_df.to_string(index=False))
+#         print('-' * 60 + '\n')

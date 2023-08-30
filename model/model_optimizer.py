@@ -4,14 +4,14 @@ import optuna
 from torch import nn
 from optuna.trial import Trial
 from .base_model import BaseModel
-from .utils import data_processor
+from .etc import data_processor
 from .model_config import ModelConfig
 from .model_execution_strategy import ModelExecutionStrategy
 from .mlp_model import MLP
 
 
 class ModelOptimization(ModelExecutionStrategy):
-    def __init__(self, config: ModelConfig, n_trials: int = 2000) -> None:
+    def __init__(self, config: ModelConfig, n_trials: int = 1000) -> None:
         self.config = config
         self.n_trials = n_trials
         self.device = self.config.DEVICE
@@ -50,13 +50,13 @@ class ModelOptimization(ModelExecutionStrategy):
         return functions[activation_name]
 
     def trial(self, trial: Trial) -> float:
-        max_layers = 5,
-        fl_range = (1, 24),
-        train_size_range = (0.1, 0.8),
-        weight_decay_range = (1e-5, 1e-1),
-        learning_rate_range = (1e-5, 1e-1),
-        batch_size_options = [2, 4, 8, 10, 12, 16, 30],
-        num_epochs_options = [40, 60, 80, 100, 120, 150, 200],
+        max_layers = 5
+        fl_range = (1, 24)
+        train_size_range = (0.1, 0.8)
+        weight_decay_range = (1e-5, 1e-1)
+        learning_rate_range = (1e-5, 1e-1)
+        batch_size_options = [2, 4, 8, 10, 12, 16, 30]
+        num_epochs_options = [40, 60, 80, 100]
         activation_functions_options: list[str] = [
             'ReLU', 'Tanh', 'Sigmoid', 'Leaky']
 
@@ -73,26 +73,27 @@ class ModelOptimization(ModelExecutionStrategy):
         activations = []
 
         for i in range(config['params_n_layers']):
-            layer = trial.suggest_int(f'fl{i + 1}', fl_range)
+            layer = trial.suggest_int(f'fl{i + 1}', *fl_range)
             layers.append(layer)
 
             activation = trial.suggest_categorical(
                 f'activation{i + 1}', activation_functions_options)
             activations.append(self.activation_functions(activation))
 
-        layers.append(3)
+        layers.append(1)
 
         # Instance base model and pass everything
         model = MLP(layers, activations)
 
-        base_model = BaseModel(paths=[], model=model,
-                             device=self.device,
-                             batch_size=config["params_batch_size"],
-                             num_epochs=config["params_num_epochs"],
-                             train_size=config["params_train_size"],
-                             learning_rate=config["params_learning_rate"],
-                             weight_decay=config["params_weight_decay"])
-        
+        paths = [self.config.SYNTHETIC_DATA_PATH, self.config.DATA_PATH]
+        base_model = BaseModel(paths=paths, model=model,
+                               device=self.device,
+                               batch_size=config["params_batch_size"],
+                               num_epochs=config["params_num_epochs"],
+                               train_size=config["params_train_size"],
+                               learning_rate=config["params_learning_rate"],
+                               weight_decay=config["params_weight_decay"])
+
         mse = base_model.train(False)
 
         return mse

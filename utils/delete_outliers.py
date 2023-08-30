@@ -7,10 +7,11 @@ from scipy.stats import chi2
 # Path of the data
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(current_dir, "../data", "data.csv")
-synthetic_data_path = os.path.join(current_dir, "../data", "synthetic_data.csv")
+synthetic_data_path = os.path.join(
+    current_dir, "../data", "data.csv.gz")
 
-synthetic_data = pd.read_csv(synthetic_data_path)
-synthetic_data = synthetic_data.drop(synthetic_data.columns[0], axis=1)
+synthetic_data = pd.read_csv(synthetic_data_path, compression="gzip")
+# synthetic_data = synthetic_data.drop(synthetic_data.columns[0], axis=1)
 
 data = pd.read_csv(data_path)
 df = data.to_numpy()
@@ -50,4 +51,5 @@ data_without_outliers = np.delete(synthetic_df, outliers_indexes, axis=0)
 clean_data = pd.DataFrame(data_without_outliers, columns=data.columns)
 
 # Save the clean data
-clean_data.to_csv(os.path.join(current_dir, "../data", "synthetic_data_cleaned.csv"), index=False)
+clean_data.to_csv(os.path.join(current_dir, "../data",
+                  "synthetic_data.csv"), index=False)

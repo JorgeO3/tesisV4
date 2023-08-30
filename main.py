@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
-from .model.model_config import ModelConfig
-from .model.model_trainer import ModelTraining
-from .model.model_validator import ModelValidation
-from .model.model_predictor import ModelPrediction
-from .model.model_optimizer import ModelOptimization
+from model.model_config import ModelConfig
+from model.model_trainer import ModelTraining
+from model.model_validator import ModelValidation
+from model.model_predictor import ModelPrediction
+from model.model_optimizer import ModelOptimization
 
 
 class ModelExecutionStrategy(ABC):
@@ -48,4 +48,4 @@ def main():
 
 
 if __name__ == "__main__":
-    print("Hello world")
+    main()

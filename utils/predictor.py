@@ -28,7 +28,7 @@ y_scaler: StandardScaler = joblib.load(y_scaler_path)
 mlp = torch.load(model_path, map_location=torch.device('cpu'))
 
 input_vars = ["%Chi", "%Gel", "%Gly", "%Pec", "%Sta", "%Oil",
-           "%W", "%AA", "T(°C)", "%RH", "t(h)"]
+              "%W", "%AA", "T(°C)", "%RH", "t(h)"]
 
 response_vars = ["TS", "WVP", "%E"]
 
@@ -46,7 +46,7 @@ X = X_scaler.transform(raw_X)
 y = y_scaler.transform(raw_y)
 
 test = X_scaler.inverse_transform(X)
-print (test)
+print(test)
 
 inputs = torch.tensor(X, dtype=torch.float32)
 targets = torch.tensor(y, dtype=torch.float32)
@@ -58,7 +58,6 @@ with torch.no_grad():
     mae = mean_absolute_error(preds, targets)
     mape = mean_absolute_percentage_error(preds, targets)
     rmse = mean_squared_error(preds, targets, False)
-
 
     # Desescala las predicciones, los objetivos y las entradas
     inputs = X_scaler.inverse_transform(inputs.numpy().reshape(1, -1))
@@ -75,4 +74,3 @@ with torch.no_grad():
     print("\nTargets:\n", targets_df.to_string(index=False))
     print("\nPredictions:\n", preds_df.to_string(index=False))
     print('-' * 60 + '\n')
-

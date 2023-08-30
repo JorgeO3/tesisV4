@@ -4,18 +4,18 @@ import joblib
 
 from torch import nn
 from torch.optim import Adam
-from .mlp_dataset import ModelDataset
 from torch.utils.data import DataLoader
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from torchmetrics.functional.regression.r2 import r2_score
 
-from .utils import concatenate_data, data_processor
+from .mlp_dataset import ModelDataset
 from .model_config import ModelConfig
+from .etc import concatenate_data, data_processor
 
 
 class BaseModel:
-    def __init__(self, *paths, model, device, batch_size, num_epochs, train_size, learning_rate, weight_decay):
+    def __init__(self, paths, model, device, batch_size, num_epochs, train_size, learning_rate, weight_decay):
         self.paths = paths
         self.model = model
         self.device = device
@@ -49,11 +49,16 @@ class BaseModel:
         return DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True), test_data
 
     def train(self, debug: bool):
+        self.model.to(self.device)
         best_mse = np.inf
         history = []
 
         train_loader, test_data = self.generate_dataloader()
         X_test, y_test = data_processor(test_data)
+
+        # Generate test tensors
+        X_test = torch.tensor(X_test, dtype=torch.float32).to(self.device)
+        y_test = torch.tensor(y_test, dtype=torch.float32).to(self.device)
 
         for i in range(self.num_epochs):
             self.model.train()
