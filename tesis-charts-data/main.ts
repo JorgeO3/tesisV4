@@ -57,10 +57,11 @@ function extractFields(document: string[]): Author[] {
 }
 
 if (import.meta.main) {
+  const numberOfAuthors = 15;
   const dataFilePath = pathToURL("data.csv");
   const authorsFilePath = pathToURL("authors.csv");
-  const relationsTablePath = pathToURL("relations.csv");
-  const charactheristicTablePath = pathToURL("characteristics.csv");
+  const relationsTablePath = pathToURL("edges.csv");
+  const charactheristicTablePath = pathToURL("nodes.csv");
 
   let parsedDocuments = parseCSV(dataFilePath);
   const _documentsFileHeaders = parsedDocuments[0];
@@ -77,7 +78,7 @@ if (import.meta.main) {
     const bCites = parseInt(b[2]);
     return bCites > aCites ? 1 : -1;
   });
-  parsedAuthors = parsedAuthors.slice(0, 50);
+  parsedAuthors = parsedAuthors.slice(0, numberOfAuthors);
 
   // Create the charactheristics table CSV
   const charactheristicsTable: Charactheristic[] = [];
@@ -102,16 +103,14 @@ if (import.meta.main) {
 
   Deno.writeTextFileSync(
     charactheristicTablePath,
-    "Id, Name, Cites, Size, Color, Type",
+    "Id,Label",
   );
 
   for (const charact of charactheristicsTable) {
-    const { id, name, cites, size, color, type } = charact;
-    Deno.writeTextFileSync(
-      charactheristicTablePath,
-      `\n${id}, ${name}, ${cites}, ${size}, ${color}, ${type}`,
-      { append: true },
-    );
+    const { id, name } = charact;
+    Deno.writeTextFileSync(charactheristicTablePath, `\n${id},${name}`, {
+      append: true,
+    });
   }
 
   // Create the relationship table CSV
@@ -141,11 +140,15 @@ if (import.meta.main) {
     }
   }
 
-  Deno.writeTextFileSync(relationsTablePath, "From, To");
+  Deno.writeTextFileSync(relationsTablePath, "source,target,type,weight");
   for (const [_key, [authorId, coauthorId]] of relationsTable) {
-    Deno.writeTextFileSync(relationsTablePath, `\n${authorId}, ${coauthorId}`, {
-      append: true,
-    });
+    Deno.writeTextFileSync(
+      relationsTablePath,
+      `\n${authorId},${coauthorId},Undirected,1`,
+      {
+        append: true,
+      },
+    );
   }
 }
 

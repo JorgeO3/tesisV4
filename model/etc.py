@@ -16,7 +16,7 @@ def data_processor(data: np.ndarray):
 
     # Define the input and response variables
     X = shuffled_data.drop(shuffled_data.columns[[11, 12, 13]], axis=1).values
-    y = shuffled_data["WVP"].values.reshape(-1, 1)
+    y = shuffled_data[resp_vars].values
 
     return X, y
 

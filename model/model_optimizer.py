@@ -11,7 +11,7 @@ from .mlp_model import MLP
 
 
 class ModelOptimization(ModelExecutionStrategy):
-    def __init__(self, config: ModelConfig, n_trials: int = 1000) -> None:
+    def __init__(self, config: ModelConfig, n_trials: int = 500) -> None:
         self.config = config
         self.n_trials = n_trials
         self.device = self.config.DEVICE
@@ -50,7 +50,7 @@ class ModelOptimization(ModelExecutionStrategy):
         return functions[activation_name]
 
     def trial(self, trial: Trial) -> float:
-        max_layers = 5
+        max_layers = 2
         fl_range = (1, 24)
         train_size_range = (0.1, 0.8)
         weight_decay_range = (1e-5, 1e-1)

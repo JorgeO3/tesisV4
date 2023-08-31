@@ -234,7 +234,7 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
 if __name__ == '__main__':
     # ================ Params for training =================
     BATCH_SIZE = 30
-    NUM_EPOCHS = 100
+    NUM_EPOCHS = 200
     TRAIN_SIZE = 0.80013098997437
     WEIGHT_DECAY = 4.20990601928744E-04
     LEARNING_RATE = 0.001840750065082665
