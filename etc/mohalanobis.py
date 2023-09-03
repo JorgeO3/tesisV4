@@ -48,8 +48,9 @@ def mohalanobis(data):
     return clean_data
 
 
-result = mohalanobis(data)
+firt = mohalanobis(data)
+second = mohalanobis(firt.to_numpy())
 
 # Save the clean data
-result.to_csv(os.path.join(current_dir, "../data",
+second.to_csv(os.path.join(current_dir, "../data",
                            "gretel_data.csv"), index=False)

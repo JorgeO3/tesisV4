@@ -100,7 +100,7 @@ def compute_mre(y_pred, y_true):
 
 def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    folder = "gretel_82_s1"
+    folder = "gretel_v2_67_s1"
     data_path = os.path.join(
         current_dir, f"../data/{folder}", "train_data.csv")
     synthetic_data_path = os.path.join(
@@ -248,8 +248,8 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
 
 if __name__ == '__main__':
     # ================ Params for training =================
-    BATCH_SIZE = 20
-    NUM_EPOCHS = 200
+    BATCH_SIZE = 8
+    NUM_EPOCHS = 100
     TRAIN_SIZE = 0.8
     WEIGHT_DECAY = 0.000816884055609576
     LEARNING_RATE = 0.000524302807362354

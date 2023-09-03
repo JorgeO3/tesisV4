@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-folder = "gretel_76_s2"
+folder = "gretel_v2_67_s1"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(current_dir, "../data", "gretel_data.csv")

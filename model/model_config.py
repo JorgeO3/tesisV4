@@ -41,7 +41,7 @@ class ModelConfig:
                   "%Oil", "%W", "%AA", "T(°C)", "%RH", "t(h)"]
     ACTIVE_RESPONSE_VARS = []
     NUM_LAYERS = None
-    FOLDER = "gretel_83_s1"
+    FOLDER = "gretel_v2_67_s1"
 
     SCALER_PATH = os.path.join(CURRENT_DIR, "../data", "scaler.pkl")
     STUDY_CSV_PATH = os.path.join(

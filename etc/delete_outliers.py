@@ -58,7 +58,7 @@ from scipy.stats import chi2
 # Path of the data
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(current_dir, "../data", "data.csv")
-folder = "gretel_76_s2"
+folder = "gretel_v2_67_s1"
 
 df = pd.read_csv(data_path)
 data = df.to_numpy()
