@@ -12,7 +12,7 @@ from .model_execution_strategy import ModelExecutionStrategy
 
 
 class ModelOptimization(ModelExecutionStrategy):
-    def __init__(self, config: ModelConfig, n_trials: int = 500) -> None:
+    def __init__(self, config: ModelConfig, n_trials: int = 2000) -> None:
         self.config = config
         self.n_trials = n_trials
         self.device = self.config.DEVICE
@@ -61,15 +61,15 @@ class ModelOptimization(ModelExecutionStrategy):
         train_size_range = (0.1, 0.8)
         weight_decay_range = (1e-5, 1e-1)
         learning_rate_range = (1e-5, 1e-1)
-        batch_size_options = [2, 4, 8, 10, 12, 16, 30]
-        num_epochs_options = [40, 60, 80, 100]
+        batch_size_options = (10, 100)
+        num_epochs_options = (50, 500)
         activation_functions_options: list[str] = [
             'ReLU', 'Tanh', 'Sigmoid', 'Leaky']
 
         config = {
             'params_n_layers': trial.suggest_int('n_layers', 1, max_layers),
-            'params_batch_size': trial.suggest_categorical('batch_size', batch_size_options),
-            'params_num_epochs': trial.suggest_categorical('num_epochs', num_epochs_options),
+            'params_batch_size': trial.suggest_int('batch_size', *batch_size_options),
+            'params_num_epochs': trial.suggest_int('num_epochs', *num_epochs_options),
             'params_train_size': trial.suggest_float('train_size', *train_size_range, log=True),
             'params_weight_decay': trial.suggest_float('weight_decay', *weight_decay_range, log=True),
             'params_learning_rate': trial.suggest_float('learning_rate', *learning_rate_range, log=True),
@@ -102,6 +102,6 @@ class ModelOptimization(ModelExecutionStrategy):
                                learning_rate=config["params_learning_rate"],
                                weight_decay=config["params_weight_decay"])
 
-        mse = base_model.train(self.config.DEBUG)
-
+        mse, mre = base_model.train(self.config.DEBUG)
+        trial.set_user_attr("mre", mre)
         return mse

@@ -76,10 +76,12 @@ class MLP(nn.Module):
         super().__init__()
         self.layers = nn.Sequential(
             nn.Linear(11, 24),
-            nn.Tanh(),
-            nn.Linear(24, 8),
             nn.ReLU(),
-            nn.Linear(8, 1),
+            nn.Linear(24, 12),
+            nn.ReLU(),
+            nn.Linear(12, 6),
+            nn.ReLU(),
+            nn.Linear(6, 1),
         )
 
     def forward(self, x):
@@ -97,7 +99,7 @@ def compute_mre(y_pred, y_true):
 
 
 def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
-    folder = "gretel_82_s1"
+    folder = "gretel_70_s1"
     current_dir = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(
         current_dir, f"../data/{folder}", "train_data.csv")
@@ -249,10 +251,10 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
 
 if __name__ == '__main__':
     # ================ Params for training =================
-    BATCH_SIZE = 8
-    NUM_EPOCHS = 200
-    TRAIN_SIZE = 0.764944803014162
-    WEIGHT_DECAY = 0.000105593595446332
-    LEARNING_RATE = 0.00423202910514604
+    BATCH_SIZE = 30
+    NUM_EPOCHS = 500
+    TRAIN_SIZE = 0.8
+    WEIGHT_DECAY = 0.000266598124339528
+    LEARNING_RATE = 0.0000723202910514604
     # ========================= // =========================
     main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE)

@@ -1,150 +1,56 @@
-# # Path of the data
-# current_dir = os.path.dirname(os.path.abspath(__file__))
-# data_path = os.path.join(current_dir, "../data/gretel", "gretel_data.csv")
-# synthetic_data_path = os.path.join(
-#     current_dir, "../data/gretel", "synthetic_gretel.csv.gz")
-
-# synthetic_data = pd.read_csv(synthetic_data_path, compression="gzip")
-# synthetic_data = synthetic_data.drop(synthetic_data.columns[0], axis=1)
-
-# df = pd.read_csv(data_path)
-# data = df.to_numpy()
-
-# synthetic_df = synthetic_data.values
-
-# # Covarance matrix
-# covariance = np.cov(data, rowvar=False)
-
-# # Covariance matrix power of -1
-# covariance_pm1 = np.linalg.matrix_power(covariance, -1)
-
-# # Center point
-# center_point = np.mean(data, axis=0)
-
-# # Distances between center and point
-# distances = []
-
-# for _, val in enumerate(synthetic_df):
-#     p1 = val
-#     p2 = center_point
-#     distance = (p1 - p2).T.dot(covariance_pm1).dot(p1 - p2)
-#     distances.append(distance)
-
-# distances = np.array(distances)
-
-# # Cutoff (threshold) value from Chi-Sqaure Distribution for detecting outliers
-# cutoff = chi2.ppf(0.95, data.shape[1])
-
-# # Index of outliners
-# outliers_indexes = np.where(distances > cutoff)
-
-# # Delete outliers from the data
-# data_without_outliers = np.delete(synthetic_df, outliers_indexes, axis=0)
-
-# # Transform into df
-# clean_data = pd.DataFrame(data_without_outliers, columns=data.columns)
-
-# # Save the clean data
-# clean_data.to_csv(os.path.join(current_dir, "../data/gretel",
-#                   "synthetic_gretel.csv"), index=False)
-
 import os
-import sys
-
 import numpy as np
 import pandas as pd
 from scipy.stats import chi2
 
-# Path of the data
+
+def load_data(path, compression=None):
+    return pd.read_csv(path, compression=compression)
+
+
+def clean_data(dataframe: pd.DataFrame):
+    dataframe = dataframe.drop_duplicates().reset_index(drop=True)
+    dataframe = dataframe.dropna().reset_index(drop=True)
+    return dataframe
+
+
+def compute_mahalanobis_distances(data, reference_data):
+    covariance = np.cov(reference_data, rowvar=False)
+    covariance_pm1 = np.linalg.matrix_power(covariance, -1)
+    center_point = np.mean(reference_data, axis=0)
+    distances = [(val - center_point).T.dot(covariance_pm1).dot(val -
+                                                                center_point) for val in data]
+    return np.array(distances)
+
+
+def remove_outliers(data, reference_data, dataframe):
+    distances = compute_mahalanobis_distances(data, reference_data)
+    cutoff = chi2.ppf(0.95, reference_data.shape[1])
+    outliers_indexes = np.where(distances > cutoff)
+    data_without_outliers = np.delete(data, outliers_indexes, axis=0)
+    return pd.DataFrame(data_without_outliers, columns=dataframe.columns)
+
+
+folder = "gretel_77_s1"
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(current_dir, "../data", "data.csv")
-folder = "gretel_v2_67_s1"
 
-df = pd.read_csv(data_path)
-data = df.to_numpy()
+df = load_data(data_path)
+df = clean_data(df)
 
-
-def mohalanobis(data):
-    # Covarance matrix
-    covariance = np.cov(data, rowvar=False)
-
-    # Covariance matrix power of -1
-    covariance_pm1 = np.linalg.matrix_power(covariance, -1)
-
-    # Center point
-    center_point = np.mean(data, axis=0)
-
-    # Distances between center and point
-    distances = []
-
-    for _, val in enumerate(data):
-        p1 = val
-        p2 = center_point
-        distance = (p1 - p2).T.dot(covariance_pm1).dot(p1 - p2)
-        distances.append(distance)
-
-    distances = np.array(distances)
-
-    # Cutoff (threshold) value from Chi-Sqaure Distribution for detecting outliers
-    cutoff = chi2.ppf(0.95, data.shape[1])
-
-    # Index of outliners
-    outliers_indexes = np.where(distances > cutoff)
-
-    # Delete outliers from the data
-    data_without_outliers = np.delete(data, outliers_indexes, axis=0)
-
-    # Transform into data
-    clean_data = pd.DataFrame(data_without_outliers, columns=df.columns)
-
-    return clean_data
-
-
-result = mohalanobis(data)
+# Remove outliers from original data based on its own Mahalanobis distance
+df = remove_outliers(df.to_numpy(), df.to_numpy(), df)
 
 synthetic_data_path = os.path.join(
     current_dir, f"../data/{folder}", f"{folder}.csv.gz")
-synthetic_data = pd.read_csv(synthetic_data_path, compression="gzip")
-# synthetic_data = synthetic_data.drop(synthetic_data.columns[0], axis=1)
+synthetic_df = load_data(synthetic_data_path, compression="gzip")
+synthetic_df = clean_data(synthetic_df)
 
+# Remove outliers from synthetic data based on cleaned original data's Mahalanobis distance
+clean_synthetic_df = remove_outliers(
+    synthetic_df.values, df.to_numpy(), synthetic_df)
 
-df = result
-data = df.to_numpy()
-
-synthetic_df = synthetic_data.values
-
-# Covarance matrix
-covariance = np.cov(data, rowvar=False)
-
-# Covariance matrix power of -1
-covariance_pm1 = np.linalg.matrix_power(covariance, -1)
-
-# Center point
-center_point = np.mean(data, axis=0)
-
-# Distances between center and point
-distances = []
-
-for _, val in enumerate(synthetic_df):
-    p1 = val
-    p2 = center_point
-    distance = (p1 - p2).T.dot(covariance_pm1).dot(p1 - p2)
-    distances.append(distance)
-
-distances = np.array(distances)
-
-# Cutoff (threshold) value from Chi-Sqaure Distribution for detecting outliers
-cutoff = chi2.ppf(0.95, data.shape[1])
-
-# Index of outliners
-outliers_indexes = np.where(distances > cutoff)
-
-# Delete outliers from the data
-data_without_outliers = np.delete(synthetic_df, outliers_indexes, axis=0)
-
-# Transform into df
-clean_data = pd.DataFrame(data_without_outliers, columns=df.columns)
-
+print(f"Original shape: {clean_synthetic_df.shape}")
 # Save the clean data
-clean_data.to_csv(os.path.join(
+clean_synthetic_df.to_csv(os.path.join(
     current_dir, f"../data/{folder}", "synthetic_gretel.csv"), index=False)

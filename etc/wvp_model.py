@@ -100,7 +100,7 @@ def compute_mre(y_pred, y_true):
 
 def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    folder = "gretel_v2_67_s1"
+    folder = "gretel_v2_73_s1"
     data_path = os.path.join(
         current_dir, f"../data/{folder}", "train_data.csv")
     synthetic_data_path = os.path.join(
@@ -116,12 +116,10 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
                       axis=0), columns=data.columns)
     df = df.sample(frac=1).reset_index(drop=True)
 
-    y = df["WVP"].values.reshape(-1, 1)
+    y = df[RESPONSE_VARIABLES].values.reshape(-1, 1)
     X = df.drop(df.columns[[11, 12, 13]], axis=1).values
 
-    df["WVP"].plot.hist(bins=12, alpha=0.5)
-
-    y_val = val_data["WVP"].values.reshape(-1, 1)
+    y_val = val_data[RESPONSE_VARIABLES].values.reshape(-1, 1)
     X_val = val_data.drop(df.columns[[11, 12, 13]], axis=1).values
 
     # Splitting the dataset

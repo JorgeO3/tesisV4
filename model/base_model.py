@@ -48,10 +48,17 @@ class BaseModel:
 
         return DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True), test_data
 
+    def compute_mre(self, preds, target, epsilon=1e-10):
+        mre = torch.mean(torch.abs(preds - target) /
+                         (torch.abs(target) + epsilon)) * 100
+        return mre.item()
+
     def train(self, debug: bool):
         self.model.to(self.device)
-        best_mse = np.inf
-        history = []
+        best_mse = float('inf')
+        mre_list = []
+        patience = 10
+        no_improve = 0
 
         train_loader, test_data = self.generate_dataloader()
         X_test, y_test = self.config.data_processor(test_data)
@@ -80,16 +87,23 @@ class BaseModel:
 
                 mse = self.loss_function(y_pred, y_test)
                 mse = float(mse)
-
-                history.append(mse)
+                mre = self.compute_mre(y_pred, y_test)
+                mre_list.append(mre)
 
                 if debug:
-                    r2 = r2_score(y_pred, self.y_test)
+                    r2 = r2_score(y_pred, y_test)
                     print(f"=========== MSE - EPOCH: {i} ==========")
                     print(f"MSE: {mse}, R2: {r2}")
                     print("========================================\n")
 
                 if mse < best_mse:
                     best_mse = mse
+                    no_improve = 0
+                else:
+                    no_improve += 1
+                if no_improve >= patience:
+                    print("Early stopping!")
+                    break
 
-        return best_mse
+        avg_mre = sum(mre_list) / len(mre_list)
+        return best_mse, avg_mre

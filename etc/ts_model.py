@@ -11,7 +11,7 @@ import joblib
 
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from torchmetrics.functional.regression.r2 import r2_score
 from torchmetrics.functional.regression.mse import mean_squared_error
@@ -75,11 +75,11 @@ class MLP(nn.Module):
     def __init__(self):
         super().__init__()
         self.layers = nn.Sequential(
-            nn.Linear(11, 23),
-            nn.Tanh(),
-            nn.Linear(23, 11),
-            nn.LeakyReLU(),
-            nn.Linear(11, 1),
+            nn.Linear(11, 20),
+            nn.ReLU(),
+            nn.Linear(20, 19),
+            nn.Sigmoid(),
+            nn.Linear(19, 1),
         )
 
     def forward(self, x):
@@ -98,10 +98,13 @@ def compute_mre(y_pred, y_true):
 
 def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    data_path = os.path.join(current_dir, "../data/", "train_data.csv")
+    folder = "gretel_70_s1"
+    data_path = os.path.join(
+        current_dir, f"../data/{folder}", "train_data.csv")
     synthetic_data_path = os.path.join(
-        current_dir, "../data/", "synthetic_data.csv")
-    val_data_path = os.path.join(current_dir, "../data/", "test_data.csv")
+        current_dir, f"../data/{folder}", "synthetic_gretel.csv")
+    val_data_path = os.path.join(
+        current_dir, f"../data/{folder}", "test_data.csv")
 
     data = pd.read_csv(data_path).sample(frac=1).reset_index(drop=True)
     synthetic_data = pd.read_csv(synthetic_data_path).values
@@ -140,9 +143,11 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
         mlp.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
 
     # Metrics for analysis
-    best_mse = np.inf
+    best_mse = float('inf')
     best_weights = None
     history = []
+    patience = 10
+    no_improve = 0
 
     for i in range(NUM_EPOCHS):
         mlp.train()
@@ -171,10 +176,14 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
 
         if mse < best_mse:
             best_mse = mse
-            best_weights = copy.deepcopy(mlp.state_dict())
-            torch.save(mlp.state_dict(), "model_weights.pth")
+            no_improve = 0
+        else:
+            no_improve += 1
+        if no_improve >= patience:
+            print("Early stopping!")
+            break
 
-    mlp.load_state_dict(best_weights)  # type: ignore
+    # mlp.load_state_dict(best_weights)  # type: ignore
     print("MSE: %.2f" % best_mse)
     print("RMSE: %.2f" % np.sqrt(best_mse))
 
@@ -185,7 +194,7 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
     X_val = torch.tensor(X_val, dtype=torch.float32)
     y_val = torch.tensor(y_val, dtype=torch.float32)
 
-    torch.save(mlp, "mlp-model.pth")
+    # torch.save(mlp, "mlp-model.pth")
 
     # Make predictions with the model
     mlp.eval()
@@ -241,11 +250,10 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
 
 if __name__ == '__main__':
     # ================ Params for training =================
-    BATCH_SIZE = 8
-    NUM_EPOCHS = 80
-    TRAIN_SIZE = 0.7685821086047271
-    WEIGHT_DECAY = 0.0001436047368461728
-    LEARNING_RATE = 0.011787701637317871
+    BATCH_SIZE = 30
+    NUM_EPOCHS = 150
+    TRAIN_SIZE = 0.8
+    WEIGHT_DECAY = 8.386980096485589e-05
+    LEARNING_RATE = 0.0008461003111687947
     # ========================= // =========================
-
     main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE)

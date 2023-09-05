@@ -2,13 +2,14 @@ import os
 
 import pandas as pd
 
-folder = "gretel_v2_67_s1"
+folder = "gretel_77_s1"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(current_dir, "../data", "gretel_data.csv")
 
 data = pd.read_csv(data_path).reset_index(drop=True)
-train_data = data.sample(frac=0.875, random_state=0)
+print(data.shape)
+train_data = data.sample(frac=0.92, random_state=0)
 test_data = data.drop(train_data.index)
 
 train_data.to_csv(os.path.join(current_dir, f"../data/{folder}",

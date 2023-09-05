@@ -41,21 +41,23 @@ class ModelConfig:
                   "%Oil", "%W", "%AA", "T(°C)", "%RH", "t(h)"]
     ACTIVE_RESPONSE_VARS = []
     NUM_LAYERS = None
-    FOLDER = "gretel_v2_67_s1"
 
-    SCALER_PATH = os.path.join(CURRENT_DIR, "../data", "scaler.pkl")
-    STUDY_CSV_PATH = os.path.join(
-        CURRENT_DIR, f"../results/{FOLDER}", "study.csv")
-    TEST_DATA_PATH = os.path.join(
-        CURRENT_DIR, f"../data/{FOLDER}", "test_data.csv")
-    DATA_PATH = os.path.join(
-        CURRENT_DIR, f"../data/{FOLDER}", "train_data.csv")
-    MANUAL_MODEL_PATH = os.path.join(
-        CURRENT_DIR, "../results", "manual_model.pt")
-    SYNTHETIC_DATA_PATH = os.path.join(
-        CURRENT_DIR, f"../data/{FOLDER}", "synthetic_gretel.csv")
-    SAVE_SCALER = False
-    DEBUG = False
+    def __init__(self, folder: str):
+        self.FOLDER = folder
+        self.SCALER_PATH = os.path.join(
+            self.CURRENT_DIR, "../data", "scaler.pkl")
+        self.STUDY_CSV_PATH = os.path.join(
+            self.CURRENT_DIR, f"../results/{self.FOLDER}", "study.csv")
+        self.TEST_DATA_PATH = os.path.join(
+            self.CURRENT_DIR, f"../data/{self.FOLDER}", "test_data.csv")
+        self.DATA_PATH = os.path.join(
+            self.CURRENT_DIR, f"../data/{self.FOLDER}", "train_data.csv")
+        self.MANUAL_MODEL_PATH = os.path.join(
+            self.CURRENT_DIR, "../results", "manual_model.pt")
+        self.SYNTHETIC_DATA_PATH = os.path.join(
+            self.CURRENT_DIR, f"../data/{self.FOLDER}", "synthetic_gretel.csv")
+        self.SAVE_SCALER = False
+        self.DEBUG = False
 
     @staticmethod
     def initialize():

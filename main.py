@@ -36,7 +36,7 @@ class ModelStrategyFactory:
 def cli():
     parser = argparse.ArgumentParser(description="PyTorch Model Execution")
     parser.add_argument("mode", choices=[
-                        "training", "optimization", "prediction"], help="Model mode")
+        "training", "optimization", "prediction"], help="Model mode")
     parser.add_argument("--ts", action="store_true",
                         help="Enable ts response variable")
     parser.add_argument("--wvp", action="store_true",
@@ -48,7 +48,7 @@ def cli():
     parser.add_argument("--threads", type=int, help="Enable number of threads")
     parser.add_argument("--layers", type=int,
                         help="Set number of model layers")
-
+    parser.add_argument("--folder", type=str, help="Specify data input")
     return parser.parse_args()
 
 
@@ -58,6 +58,7 @@ def main():
     gpu = False
     threads = 1
     layers = 5
+    folder = ""
 
     if args.ts:
         resp_vars.append("TS")
@@ -71,13 +72,19 @@ def main():
         threads = args.threads
     if args.layers is not None:
         layers = args.layers
+    if args.folder:
+        folder = args.folder
 
     if len(resp_vars) == 0:
         print("Please include at least one response variable.")
         return
 
+    if not folder:
+        print("Folder is mandatory. Please provide a folder path.")
+        return
+
     ModelConfig.initialize()
-    model_config = ModelConfig()
+    model_config = ModelConfig(folder)
     model_config.set_active_resp_vars(resp_vars)
     model_config.enable_gpu(gpu)
     model_config.set_num_threads(threads)
