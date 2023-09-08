@@ -1,6 +1,7 @@
 import os
 import torch
 import joblib
+import numpy as np
 import torch.nn as nn
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -52,11 +53,16 @@ class WVPModel:
         return scaler_y.inverse_transform(preds)
 
     def inference(self, X):
-        input = self.normalize_inputs(X)
-        input = self.generate_tensor(input)
+        input = np.array(X)
+        normalized_input = self.normalize_inputs(input)
+        input_tensor = self.generate_tensor(normalized_input)
 
         self.model.eval()
         with torch.no_grad():
-            y_pred = self.model(input)
-            y_pred = self.unnormalize_predictions(y_pred)
-            return y_pred
+            y_pred = self.model(input_tensor)
+
+        y_pred = self.unnormalize_predictions(y_pred)
+        y_pred = y_pred.reshape(-1, 1)
+        combined = np.hstack((X, y_pred))
+
+        return combined

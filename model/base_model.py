@@ -1,6 +1,6 @@
 import torch
-import numpy as np
 import joblib
+import torch.nn.functional as F
 
 from torch import nn
 from torch.optim import Adam
@@ -53,6 +53,13 @@ class BaseModel:
                          (torch.abs(target) + epsilon)) * 100
         return mre.item()
 
+    def custom_loss(self, predictions, targets):
+        mse_loss = F.mse_loss(predictions, targets)
+        negative_penalty = torch.where(
+            predictions < 0, predictions * -100, predictions * 0)
+        total_loss = mse_loss + negative_penalty.sum()
+        return total_loss
+
     def train(self, debug: bool):
         self.model.to(self.device)
         best_mse = float('inf')
@@ -75,7 +82,7 @@ class BaseModel:
                     self.device), targets.to(self.device)
 
                 outputs = self.model(inputs)
-                loss = self.loss_function(outputs, targets)
+                loss = self.custom_loss(outputs, targets)
 
                 self.optimizer.zero_grad()
                 loss.backward()
@@ -99,11 +106,11 @@ class BaseModel:
                 if mse < best_mse:
                     best_mse = mse
                     no_improve = 0
-                else:
-                    no_improve += 1
-                if no_improve >= patience:
-                    print("Early stopping!")
-                    break
+                # else:
+                #     no_improve += 1
+                # if no_improve >= patience:
+                #     print("Early stopping!")
+                #     break
 
         avg_mre = sum(mre_list) / len(mre_list)
         return best_mse, avg_mre

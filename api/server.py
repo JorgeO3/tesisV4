@@ -20,9 +20,12 @@ def read_root():
 @app.post("/model/{model_name}")
 async def predict(model_name: str, data: list[list[float]]):
     if model_name == "ts":
-        prediction = ts_model.inference(data)
-        return {"prediction": prediction}
+        result = ts_model.inference(data)
+        result_list = result.tolist()
+        return {"data": result_list}
     if model_name == "wvp":
-        return wvp_model.inference(data)
+        result = ts_model.inference(data)
+        result_list = result.tolist()
+        return {"data": result_list}
     else:
         return {"message": "Model not found"}
