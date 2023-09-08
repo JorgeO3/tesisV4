@@ -2,13 +2,12 @@ import os
 
 import pandas as pd
 
-folder = "gretel_77_s1"
+folder = "gretel_74_v2_s1"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(current_dir, "../data", "gretel_data.csv")
+data_path = os.path.join(current_dir, "../data", "clean_data.csv")
 
 data = pd.read_csv(data_path).reset_index(drop=True)
-print(data.shape)
 train_data = data.sample(frac=0.92, random_state=0)
 test_data = data.drop(train_data.index)
 

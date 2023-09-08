@@ -27,6 +27,8 @@ torch.manual_seed(SEED)
 pd.set_option('display.max_rows', None)
 RESPONSE_VARIABLES = ["TS", "WVP", "%E"]
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_folder = os.path.join(current_dir, f"../trained_models/wvp")
 
 
 class ModelDataset(Dataset):
@@ -49,7 +51,8 @@ def normalizer(X_train, y_train, X_test, y_test, X_val, y_val):
     # Normalization of X data
     scaler_X = StandardScaler()
     scaler_X.fit(X_train)
-    # joblib.dump(scaler_X, 'scaler_X.save')
+    scaler_X_filename = os.path.join(model_folder, "scaler_X.save")
+    joblib.dump(scaler_X, scaler_X_filename)
 
     X_train = scaler_X.transform(X_train)
     X_test = scaler_X.transform(X_test)
@@ -58,7 +61,8 @@ def normalizer(X_train, y_train, X_test, y_test, X_val, y_val):
     # Normalization of y data
     scaler_y = StandardScaler()
     scaler_y.fit(y_train)
-    # joblib.dump(scaler_y, 'scaler_y.save')
+    scaler_y_filename = os.path.join(model_folder, "scaler_y.save")
+    joblib.dump(scaler_y, scaler_y_filename)
 
     y_train = scaler_y.transform(y_train)
     y_test = scaler_y.transform(y_test)
@@ -100,7 +104,7 @@ def compute_mre(y_pred, y_true):
 
 def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    folder = "gretel_v2_73_s1"
+    folder = "gretel_75_v2_s1"
     data_path = os.path.join(
         current_dir, f"../data/{folder}", "train_data.csv")
     synthetic_data_path = os.path.join(
@@ -116,10 +120,10 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
                       axis=0), columns=data.columns)
     df = df.sample(frac=1).reset_index(drop=True)
 
-    y = df[RESPONSE_VARIABLES].values.reshape(-1, 1)
+    y = df["WVP"].values.reshape(-1, 1)
     X = df.drop(df.columns[[11, 12, 13]], axis=1).values
 
-    y_val = val_data[RESPONSE_VARIABLES].values.reshape(-1, 1)
+    y_val = val_data["WVP"].values.reshape(-1, 1)
     X_val = val_data.drop(df.columns[[11, 12, 13]], axis=1).values
 
     # Splitting the dataset
@@ -191,6 +195,7 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
     y_val = torch.tensor(y_val, dtype=torch.float32)
 
     # torch.save(mlp, "mlp-model.pth")
+    torch.save(mlp.state_dict(), os.path.join(model_folder, "mlp-model.pth"))
 
     # Make predictions with the model
     mlp.eval()
@@ -219,12 +224,15 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
             targets_df = pd.DataFrame(targets, columns=["WVP"])
             preds_df = pd.DataFrame(preds, columns=["WVP"])
 
-            mre_list.append(compute_mre(preds, targets))
+            mre = compute_mre(preds, targets)
+            mre_list.append(mre)
+            mre = mre.flatten()[0]
 
             # Reducir el número de decimales para una mejor visualización
             pd.options.display.float_format = "{:,.2f}".format
 
-            print(f"MAE: {mae:.4f} - MAPE: {mape:.4f} - RMSE: {rmse:.4f}")
+            print(
+                f"MAE: {mae:.4f} - MAPE: {mape:.4f} - RMSE: {rmse:.4f} - MRE: {mre}")
             print("\nInputs:\n", inputs_df.to_string(index=False))
             print("\nTargets:\n", targets_df.to_string(index=False))
             print("\nPredictions:\n", preds_df.to_string(index=False))
@@ -247,7 +255,7 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
 if __name__ == '__main__':
     # ================ Params for training =================
     BATCH_SIZE = 8
-    NUM_EPOCHS = 100
+    NUM_EPOCHS = 120
     TRAIN_SIZE = 0.8
     WEIGHT_DECAY = 0.000816884055609576
     LEARNING_RATE = 0.000524302807362354

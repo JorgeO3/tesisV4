@@ -25,7 +25,7 @@ np.random.seed(SEED)
 torch.manual_seed(SEED)
 # Save models
 pd.set_option('display.max_rows', None)
-RESPONSE_VARIABLES = ["TS", "WVP", "%E"]
+RESPONSE_VARIABLES = ["TS", "WVP"]
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
@@ -75,13 +75,11 @@ class MLP(nn.Module):
     def __init__(self):
         super().__init__()
         self.layers = nn.Sequential(
-            nn.Linear(11, 24),
-            nn.ReLU(),
-            nn.Linear(24, 12),
-            nn.ReLU(),
-            nn.Linear(12, 6),
-            nn.ReLU(),
-            nn.Linear(6, 3),
+            nn.Linear(11, 21),
+            nn.LeakyReLU(),
+            nn.Linear(21, 15),
+            nn.Tanh(),
+            nn.Linear(15, 2),
         )
 
     def forward(self, x):
@@ -100,7 +98,7 @@ def compute_mre(y_pred, y_true):
 
 def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    folder = "gretel_77_s1"
+    folder = "gretel_75_v2_s1"
     data_path = os.path.join(
         current_dir, f"../data/{folder}", "train_data.csv")
     synthetic_data_path = os.path.join(
@@ -177,11 +175,11 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
         if mse < best_mse:
             best_mse = mse
             no_improve = 0
-        else:
-            no_improve += 1
-        if no_improve >= patience:
-            print("Early stopping!")
-            break
+        # else:
+        #     no_improve += 1
+        # if no_improve >= patience:
+        #     print("Early stopping!")
+        #     break
 
     # mlp.load_state_dict(best_weights)  # type: ignore
     print("MSE: %.2f" % best_mse)
@@ -220,8 +218,8 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
             # Coloca los nombres de tus features
             inputs_df = pd.DataFrame(inputs, columns=[
                 "%Chi", "%Gel", "%Gly", "%Pec", "%Sta", "%Oil", "%W", "%AA", "T(°C)", "%RH", "t(h)"])
-            targets_df = pd.DataFrame(targets, columns=["TS", "WVP", "%E"])
-            preds_df = pd.DataFrame(preds, columns=["TS", "WVP", "%E"])
+            targets_df = pd.DataFrame(targets, columns=["TS", "WVP"])
+            preds_df = pd.DataFrame(preds, columns=["TS", "WVP"])
 
             mre = compute_mre(preds, targets)
             mre_list.append(mre)
@@ -231,7 +229,7 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
             pd.options.display.float_format = "{:,.2f}".format
 
             print(
-                f"MAE: {mae:.4f} - MAPE: {mape:.4f} - RMSE: {rmse:.4f} - MRE-1: {mre[0]:.4f} - MRE-2: {mre[1]:.4f} - MRE-3: {mre[2]:.4f}")
+                f"MAE: {mae:.4f} - MAPE: {mape:.4f} - RMSE: {rmse:.4f} - MRE-1: {mre[0]:.4f} - MRE-2: {mre[1]:.4f}")
             print("\nInputs:\n", inputs_df.to_string(index=False))
             print("\nTargets:\n", targets_df.to_string(index=False))
             print("\nPredictions:\n", preds_df.to_string(index=False))
@@ -254,8 +252,8 @@ if __name__ == '__main__':
     # ================ Params for training =================
     BATCH_SIZE = 50
     NUM_EPOCHS = 300
-    TRAIN_SIZE = 0.8
-    WEIGHT_DECAY = 1.18698034158226E-04
-    LEARNING_RATE = 0.000231866920102985
+    TRAIN_SIZE = 0.799852321686704
+    WEIGHT_DECAY = 0.55072824490198E-04
+    LEARNING_RATE = 0.00510076434927264
     # ========================= // =========================
     main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE)

@@ -77,12 +77,14 @@ class MLP(nn.Module):
     def __init__(self):
         super().__init__()
         self.layers = nn.Sequential(
-            nn.Linear(11, 22),
-            nn.LeakyReLU(),
-            nn.Linear(22, 24),
+            nn.Linear(11, 17),
+            nn.ReLU(),
+            nn.Linear(17, 14),
             nn.Tanh(),
+            nn.Linear(14, 24),
+            nn.ReLU(),
             nn.Linear(24, 12),
-            nn.Sigmoid(),
+            nn.LeakyReLU(),
             nn.Linear(12, 3),
         )
 
@@ -102,7 +104,7 @@ def compute_mre(y_pred, y_true):
 
 def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    folder = "gretel_70_s2"
+    folder = "gretel_75_v2_s1"
     data_path = os.path.join(
         current_dir, f"../data/{folder}", "train_data.csv")
     synthetic_data_path = os.path.join(
@@ -261,7 +263,7 @@ def objective(trial):
 
 if __name__ == '__main__':
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=100)
+    study.optimize(objective, n_trials=1000)
 
     print('Number of finished trials: ', len(study.trials))
     print('Best trial:')

@@ -4,10 +4,11 @@ import copy
 
 import torch
 import random
+import joblib
+import optuna
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import joblib
 
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
@@ -27,8 +28,6 @@ torch.manual_seed(SEED)
 pd.set_option('display.max_rows', None)
 RESPONSE_VARIABLES = ["TS", "WVP", "%E"]
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-current_dir = os.path.dirname(os.path.abspath(__file__))
-model_folder = os.path.join(current_dir, f"../trained_models/ts")
 
 
 class ModelDataset(Dataset):
@@ -51,8 +50,7 @@ def normalizer(X_train, y_train, X_test, y_test, X_val, y_val):
     # Normalization of X data
     scaler_X = StandardScaler()
     scaler_X.fit(X_train)
-    scaler_X_filename = os.path.join(model_folder, "scaler_X.save")
-    joblib.dump(scaler_X, scaler_X_filename)
+    joblib.dump(scaler_X, 'scaler_X.save')
 
     X_train = scaler_X.transform(X_train)
     X_test = scaler_X.transform(X_test)
@@ -61,8 +59,7 @@ def normalizer(X_train, y_train, X_test, y_test, X_val, y_val):
     # Normalization of y data
     scaler_y = StandardScaler()
     scaler_y.fit(y_train)
-    scaler_y_filename = os.path.join(model_folder, "scaler_y.save")
-    joblib.dump(scaler_y, scaler_y_filename)
+    joblib.dump(scaler_y, 'scaler_y.save')
 
     y_train = scaler_y.transform(y_train)
     y_test = scaler_y.transform(y_test)
@@ -103,6 +100,7 @@ def compute_mre(y_pred, y_true):
 
 
 def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
     folder = "gretel_75_v2_s1"
     data_path = os.path.join(
         current_dir, f"../data/{folder}", "train_data.csv")
@@ -173,33 +171,33 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
         mse = loss_function(y_pred, y_test)
         mse = float(mse)
         r2 = r2_score(y_pred, y_test)
-        history.append(mse)
+        # history.append(mse)
 
-        print(f"=========== MSE - EPOCH: {i} ==========")
-        print(f"MSE: {mse}, R2: {r2}")
-        print("========================================\n")
+        # print(f"=========== MSE - EPOCH: {i} ==========")
+        # print(f"MSE: {mse}, R2: {r2}")
+        # print("========================================\n")
 
         if mse < best_mse:
             best_mse = mse
             no_improve = 0
-        # else:
-        #     no_improve += 1
-        # if no_improve >= patience:
-        #     print("Early stopping!")
-        #     break
+        else:
+            no_improve += 1
+        if no_improve >= patience:
+            print("Early stopping!")
+            break
 
     # mlp.load_state_dict(best_weights)  # type: ignore
-    print("MSE: %.2f" % best_mse)
-    print("RMSE: %.2f" % np.sqrt(best_mse))
+    # print("MSE: %.2f" % best_mse)
+    # print("RMSE: %.2f" % np.sqrt(best_mse))
 
-    plt.plot(history)
-    plt.show()
+    # plt.plot(history)
+    # plt.show()
 
     # Generate test tensors
     X_val = torch.tensor(X_val, dtype=torch.float32)
     y_val = torch.tensor(y_val, dtype=torch.float32)
 
-    torch.save(mlp.state_dict(), os.path.join(model_folder, "mlp-model.pth"))
+    # torch.save(mlp, "mlp-model.pth")
 
     # Make predictions with the model
     mlp.eval()
@@ -228,39 +226,48 @@ def main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE):
                 "%Chi", "%Gel", "%Gly", "%Pec", "%Sta", "%Oil", "%W", "%AA", "T(°C)", "%RH", "t(h)"])
             targets_df = pd.DataFrame(targets, columns=["TS"])
             preds_df = pd.DataFrame(preds, columns=["TS"])
-            mre = compute_mre(preds, targets)
-            mre_list.append(mre)
-            mre = mre.flatten()[0]
+
+            mre_list.append(compute_mre(preds, targets))
             # Reducir el número de decimales para una mejor visualización
             pd.options.display.float_format = "{:,.2f}".format
 
-            print(
-                f"MAE: {mae:.4f} - MAPE: {mape:.4f} - RMSE: {rmse:.4f} - MRE: {mre:.4f}")
-            print("\nInputs:\n", inputs_df.to_string(index=False))
-            print("\nTargets:\n", targets_df.to_string(index=False))
-            print("\nPredictions:\n", preds_df.to_string(index=False))
+            # print(f"MAE: {mae:.4f} - MAPE: {mape:.4f} - RMSE: {rmse:.4f}")
+            # print("\nInputs:\n", inputs_df.to_string(index=False))
+            # print("\nTargets:\n", targets_df.to_string(index=False))
+            # print("\nPredictions:\n", preds_df.to_string(index=False))
 
-            print('-' * 60 + '\n')
+            # print('-' * 60 + '\n')
 
         inputs, target = X_val.to(DEVICE), y_val.to(DEVICE)
         preds = mlp(inputs)
-
-        mae = mean_absolute_error(preds, target)
-        mape = mean_absolute_percentage_error(preds, target)
-        rmse = mean_squared_error(preds, target, False)
         mre = np.mean(mre_list)
-        print('=' * 60)
-        print("Total: ")
-        print(
-            f"MAE: {mae:.4f} - MAPE: {mape:.4f} - RMSE: {rmse:.4f} - MRE: {mre:.4f}")
+        return mre
+
+
+def objective(trial: optuna.Trial):
+    BATCH_SIZE = trial.suggest_categorical('BATCH_SIZE', [10, 32, 64, 128])
+    NUM_EPOCHS = trial.suggest_categorical('NUM_EPOCHS', [50, 100, 200, 500])
+    TRAIN_SIZE = trial.suggest_categorical(
+        'TRAIN_SIZE', [0.5, 0.6, 0.7, 0.8, 0.9])
+    WEIGHT_DECAY = trial.suggest_categorical(
+        'WEIGHT_DECAY', [1e-5, 1e-4, 1e-3, 1e-2])
+    LEARNING_RATE = trial.suggest_categorical(
+        'LEARNING_RATE', [1e-5, 1e-4, 1e-3, 1e-2])
+
+    val_loss = main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE,
+                    WEIGHT_DECAY, LEARNING_RATE)
+    return val_loss
 
 
 if __name__ == '__main__':
-    # ================ Params for training =================
-    BATCH_SIZE = 32
-    NUM_EPOCHS = 180
-    TRAIN_SIZE = 0.9
-    WEIGHT_DECAY = 0.0001
-    LEARNING_RATE = 0.001
-    # ========================= // =========================
-    main(BATCH_SIZE, NUM_EPOCHS, TRAIN_SIZE, WEIGHT_DECAY, LEARNING_RATE)
+    study = optuna.create_study(direction='minimize')
+    study.optimize(objective, n_trials=300)
+
+    print('Number of finished trials: ', len(study.trials))
+    print('Best trial:')
+    trial = study.best_trial
+
+    print('Value: ', trial.value)
+    print('Params: ')
+    for key, value in trial.params.items():
+        print(f'{key}: {value}')

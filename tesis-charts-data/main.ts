@@ -1,31 +1,44 @@
-import Thread from "https://deno.land/x/Thread/Thread.ts";
+const defaultEdibleFilm = [
+  0.90,
+  0.22,
+  0.19,
+  0.00,
+  1.34,
+  0.00,
+  96.98,
+  0.37,
+  60.00,
+  50.00,
+  24.00,
+];
 
 if (import.meta.main) {
-  const thread = new Thread();
-  const command = new Deno.Command(
-    "/home/jorge/Documents/projects/tesisV4/venv/bin/python",
-    {
-      args: [
-        "/home/jorge/Documents/projects/tesisV4/etc/e_model.py",
-        "optimization",
-        "--ts",
-        "--wvp",
-        "--e",
-        "--gpu",
-      ],
-    },
-  );
-  const child = command.spawn();
-  const { code, stdout, stderr } = command.outputSync();
-  console.log(new TextDecoder().decode(stdout));
+  const data: number[][] = [];
+
+  for (let i = 0; i < defaultEdibleFilm.length; i++) {
+    for (let j = 0; j < 10; j++) {
+      const edibleFilm = [...defaultEdibleFilm];
+      edibleFilm[i] = j + 1;
+      data.push(edibleFilm);
+    }
+  }
+
+  const outputsTS = await makeRequestToModel("ts", data);
+  const response = await outputsTS.json();
+  console.log(response);
 }
 
-//   // open a file and pipe the subprocess output to it.
-//   child.stdout.pipeTo(
-//     Deno.openSync("output", { write: true, create: true }).writable,
-//   );
-
-//   // manually close stdin
-//   child.stdin.close();
-//   const status = await child.status;
-//   console.log(status);
+function makeRequestToModel(
+  model: string,
+  edibleFilm: number[][],
+): Promise<Response> {
+  const baseUrl = `http://localhost:8000/model/${model}`;
+  const response = fetch(baseUrl, {
+    method: "POST",
+    body: JSON.stringify(edibleFilm),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response;
+}
