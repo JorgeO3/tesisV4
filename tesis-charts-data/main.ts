@@ -13,9 +13,34 @@ const defaultEdibleFilm = [
 ];
 
 if (import.meta.main) {
-  const data = generateData();
-  saveDataForModel("ts", data);
-  saveDataForModel("wvp", data);
+  // const data = generateData();
+  // saveDataForModel("ts", data);
+  // saveDataForModel("wvp", data);
+  const data = [[
+    0.90,
+    0.22,
+    0.19,
+    0.00,
+    1.34,
+    0.00,
+    96.98,
+    0.37,
+    60.00,
+    50.00,
+    24.00,
+  ]];
+
+  const films: number[][] = [];
+
+  for (let i = 0; i < 10; i++) {
+    const film = [...defaultEdibleFilm];
+    film[9] = i * 10;
+    films.push(film);
+  }
+
+  console.log({ films });
+  const predictions = await fetchPredictions("ts", films);
+  console.log({ predictions });
 }
 
 async function saveDataForModel(
@@ -75,7 +100,7 @@ function generateData(): number[][] {
   for (let i = 0; i < defaultEdibleFilm.length; i++) {
     for (let j = 0; j < 10; j++) {
       const edibleFilm = [...defaultEdibleFilm];
-      edibleFilm[i] += j;
+      edibleFilm[i] += j + 1;
       data.push(edibleFilm);
     }
   }

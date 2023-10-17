@@ -11,7 +11,7 @@ import joblib
 
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from torchmetrics.functional.regression.r2 import r2_score
 from torchmetrics.functional.regression.mse import mean_squared_error
