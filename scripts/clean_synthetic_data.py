@@ -6,9 +6,9 @@ from sklearn.ensemble import IsolationForest
 dv = [3, 3, 3, 3, 3, 3, 0, 0, 0, 2, 2, 2]
 
 # Set paths
-raw_data_path = os.environ.get("RAW_DATA")
+raw_data_path = os.environ.get("ORIGINAL_DATA")
 raw_synthetic_data_path = os.environ.get("RAW_SYNTHETIC_DATA")
-cleaned_data_file_path = os.environ.get("CLEANED_FILE")
+cleaned_synthetic_data_path = os.environ.get("CLEANED_SYNTHETIC_DATA")
 
 
 def clean_data(data: pd.DataFrame, model=None):
@@ -25,6 +25,9 @@ def clean_data(data: pd.DataFrame, model=None):
     clean_data = data[outliers == 1]
     clean_data = clean_data.round(4)
 
+    print("\nNumber of rows with outliers: ")
+    print(f"{data[outliers == -1].shape[0]}\n")
+
     return clean_data, model
 
 
@@ -35,4 +38,4 @@ _, model = clean_data(df)
 # Read raw synthetic data, clean it (imputing missing values) and save it
 df_synthetic = pd.read_csv(raw_synthetic_data_path)
 df_clean_synthetic, _ = clean_data(df_synthetic, model)
-df_clean_synthetic.to_csv(cleaned_data_file_path, index=False)
+df_clean_synthetic.to_csv(cleaned_synthetic_data_path, index=False)

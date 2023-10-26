@@ -10,8 +10,11 @@ rows_with_nan = df[df.isna().any(axis=1)]
 rows_with_duplicated = df[df.duplicated()]
 rows_with_negative = df[(df < 0).any(axis=1)]
 
-print("Índices de las filas con NaN:")
+print("\nÍndices de las filas con NaN:")
 print(rows_with_nan.index.tolist())
+
+print("\nNumber of rows with NaN: ")
+print(len(rows_with_nan.index.tolist()))
 
 print("\nDetalles de las filas con NaN:")
 print(rows_with_nan)
@@ -19,5 +22,9 @@ print(rows_with_nan)
 print("\nÍndices de las filas duplicadas:")
 print(rows_with_duplicated.index.tolist())
 
+print("\nNumber of rows with duplicated values: ")
+print(len(rows_with_duplicated.index.tolist()))
+
 print("\nDetalles de las filas negativas:")
 print(rows_with_negative)
+print("\n")

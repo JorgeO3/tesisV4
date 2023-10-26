@@ -10,7 +10,7 @@ test_data_path = os.environ.get("TEST_FILE_PATH")
 
 # Split data
 data = pd.read_csv(data_path).reset_index(drop=True)
-train_data = data.sample(frac=87.5, random_state=0)
+train_data = data.sample(frac=0.875, random_state=0)
 test_data = data.drop(train_data.index)
 
 # Save data
