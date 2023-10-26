@@ -1,10 +1,7 @@
 import os
 import pandas as pd
 
-current_dir = os.getcwd()
-data_path = os.environ.get("DATA_PATH")
-cleaned_data_file = os.environ.get("CLEANED_FILE")
-data_path = os.path.join(current_dir, data_path, cleaned_data_file)
+data_path = os.environ.get("FILE_PATH")
 
 df = pd.read_csv(data_path)
 

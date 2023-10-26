@@ -8,12 +8,8 @@ from sklearn.ensemble import RandomForestRegressor
 dv = [3, 3, 3, 3, 3, 3, 0, 0, 0, 2, 2, 2]
 
 # Set paths
-current_dir = os.getcwd()
-data_path = os.environ.get("DATA_FOLDER")
-raw_data_file = os.environ.get("RAW_DATA_FILE")
-cleaned_data_file = os.environ.get("CLEANED_FILE")
-raw_data_path = os.path.join(current_dir, data_path, raw_data_file)
-cleaned_data_path = os.path.join(current_dir, data_path, cleaned_data_file)
+raw_data_path = os.environ.get("RAW_DATA_FILE")
+cleaned_data_path = os.environ.get("CLEANED_FILE")
 
 # Read raw data
 df = pd.read_csv(raw_data_path)
