@@ -2,7 +2,7 @@
 set shell := ["fish", "-c"]
 root_dir := "/workspaces/debian"
 python_exec := root_dir / "venv/bin/python"
-project_dir := root_dir / "thesisV4"
+project_dir := root_dir / "tesisV4"
 script_dir := project_dir / "scripts"
 data_dir := project_dir / "data"
 
@@ -12,7 +12,7 @@ cleaned_data := "cleaned_data.csv"
 
 raw_synthetic := "raw_synthetic_data.csv"
 cleaned_synthetic := "cleaned_synthetic_data.csv"
-gretel_synthetic := "data_preview"
+gretel_synthetic := "data_preview.csv"
 
 # The names of the train and test data files
 train_data := "train_data.csv"
@@ -59,8 +59,9 @@ setup-model-data n:
 clean-synthetic n:
     @echo "Cleaning synthetic data in file: {{raw_synthetic}}"
     @echo "And saving the result in: {{cleaned_synthetic}}"
-    RAW_DATA_FILE={{ join(data_dir, n, raw_synthetic) }} \
-    CLEANED_FILE={{ join(data_dir, n, cleaned_synthetic) }} \
+    ORIGINAL_DATA={{ join(data_dir, cleaned_data) }} \
+    RAW_SYNTHETIC_DATA={{ join(data_dir, n, raw_synthetic) }} \
+    CLEANED_SYNTHETIC_DATA={{ join(data_dir, n, cleaned_synthetic) }} \
     {{ python_exec }} {{ script_dir }}/clean_synthetic_data.py
 
 # Split the data into train and test data
@@ -68,7 +69,7 @@ clean-synthetic n:
 [private]
 split-data n:
     @echo "Splitting data into train and test..."
-    DATA_PATH={{ join(data_dir, n, cleaned_data) }} \
+    DATA_PATH={{ join(data_dir, cleaned_data) }} \
     TRAIN_FILE_PATH={{ join(data_dir, n, train_data) }} \
     TEST_FILE_PATH={{ join(data_dir, n, test_data) }} \
     {{ python_exec }} {{ script_dir }}/split_data.py
