@@ -1,0 +1,45 @@
+commands:
+  - command: mode
+    action: null
+    help: Model mode
+    type: null
+    choices:
+      - training
+      - optimization
+      - prediction
+
+  - command: "--ts"
+    action: store_true
+    help: Enable ts response variable
+    type: null
+    choices: null
+
+  - command: "--wvp"
+    action: store_true
+    help: Enable wvp response variable
+    type: null
+    choices: null
+
+  - command: "--e"
+    action: store_true
+    help: Enable e response variable
+    type: null
+    choices: null
+
+  - command: "--gpu"
+    action: store_true
+    help: Enable GPU execution
+    type: null
+    choices: null
+
+  - command: "--threads"
+    action: null
+    help: Enable number of threads
+    type: int
+    choices: null
+
+  - command: "--layers"
+    action: null
+    help: Set number of model layers
+    type: int
+    choices: null

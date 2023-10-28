@@ -18,7 +18,6 @@ gretel_synthetic := "data_preview.csv"
 train_data := "train_data.csv"
 test_data := "test_data.csv"
 
-
 # Synthetic data version
 sv := "1"
 
@@ -81,6 +80,9 @@ gen-model-data name:
     @just check {{ join(name, raw_synthetic) }}
     @just clean-synthetic {{ name }}
     @just split-data {{ name }}
+
+run-model mode="":
+    @echo "Running model..."
 
 
 
