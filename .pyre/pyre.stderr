@@ -1,0 +1,589 @@
+2023-10-29 15:34:29,430 [PID 20356] INFO No binary specified, looking for `pyre.bin` in PATH
+2023-10-29 15:34:29,430 [PID 20356] INFO Pyre binary is located at `/workspaces/debian/venv/bin/pyre.bin`
+2023-10-29 15:34:29,431 [PID 20356] INFO Could not determine the number of Pyre workers from configuration. Auto-set the value to 13.
+2023-10-29 15:34:29,437 [PID 20356] INFO No typeshed specified, looking for it...
+2023-10-29 15:34:29,437 [PID 20356] INFO Found: `/workspaces/debian/venv/lib/pyre_check/typeshed`
+2023-10-29 15:34:29,438 [PID 20356] INFO Writing arguments into /tmp/pyre_arguments_xafvcxas.json...
+2023-10-29 15:34:29,438 [PID 20356] DEBUG Arguments:
+{
+  "source_paths": {
+    "kind": "simple",
+    "paths": [
+      "/workspaces/debian/tesisV4"
+    ]
+  },
+  "search_paths": [
+    "/home/vscode/.local/lib/python3.9/site-packages$pyparsing",
+    "/home/vscode/.local/lib/python3.9/site-packages$numpy",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$referencing",
+    "/home/vscode/.local/lib/python3.9/site-packages$cycler",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$pure_eval",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$jupyter_client",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$optuna",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$tenacity",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$dataclasses_json",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$certifi",
+    "/home/vscode/.local/lib/python3.9/site-packages$importlib_resources",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$parso",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$markupsafe",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$marshmallow",
+    "/home/vscode/.local/lib/python3.9/site-packages$packaging",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$filelock",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$exceptiongroup",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$sympy",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$testslide",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$jupyter_core",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$libcst",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$sqlalchemy",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$asttokens",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$jinja2",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$executing",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$click",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$zmq",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$attrs",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$typeguard",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$torch",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$platformdirs",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$colorlog",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$rpds",
+    "/home/vscode/.local/lib/python3.9/site-packages$matplotlib",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$charset_normalizer",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$nbformat",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$lightning_utilities",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$ipykernel",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$stack_data",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$idna",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$traitlets",
+    "/home/vscode/.local/lib/python3.9/site-packages$contourpy",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$prompt_toolkit",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$importlib_metadata",
+    "/home/vscode/.local/lib/python3.9/site-packages$kiwisolver",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$alembic",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$attr",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$tornado",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$IPython",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$torchmetrics",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$pip",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stdlib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/D3DShot",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/DateTimeRange",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Deprecated",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/ExifRead",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Flask-Cors",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Flask-Migrate",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Flask-SQLAlchemy",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/JACK-Client",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Markdown",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Pillow",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/PyAutoGUI",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/PyMySQL",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/PyScreeze",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/PyYAML",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Pygments",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/SQLAlchemy",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Send2Trash",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/aiofiles",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/annoy",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/appdirs",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/aws-xray-sdk",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/babel",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/backports.ssl_match_hostname",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/beautifulsoup4",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/bleach",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/boto",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/braintree",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/cachetools",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/caldav",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/cffi",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/chardet",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/chevron",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/click-spinner",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/colorama",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/commonmark",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/console-menu",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/contextvars",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/croniter",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/dateparser",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/decorator",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/dj-database-url",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/dockerfile-parse",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/docopt",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/docutils",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/editdistance",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/emoji",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/entrypoints",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/first",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-2020",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-bugbear",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-builtins",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-docstrings",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-plugin-utils",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-rst-docstrings",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-simplify",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-typing-imports",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/fpdf2",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/gdb",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/google-cloud-ndb",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/hdbcli",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/html5lib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/httplib2",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/humanfriendly",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/ibm-db",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/influxdb-client",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/invoke",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/jmespath",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/jsonschema",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/keyboard",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/ldap3",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/mock",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/mypy-extensions",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/mysqlclient",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/netaddr",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/oauthlib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/openpyxl",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/opentracing",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/paho-mqtt",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/paramiko",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/parsimonious",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/passlib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/passpy",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/peewee",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pep8-naming",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pika",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/playsound",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/polib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/prettytable",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/protobuf",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/psutil",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/psycopg2",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyOpenSSL",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyRFC3339",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyasn1",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyaudio",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pycocotools",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pycurl",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyfarmhash",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyflakes",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyinstaller",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pynput",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyserial",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pysftp",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pytest-lazy-fixture",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-crontab",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-datemath",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-dateutil",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-gflags",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-jose",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-nmap",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-slugify",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-xlib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pytz",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyvmomi",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pywin32",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/redis",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/regex",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/requests",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/retry",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/setuptools",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/simplejson",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/singledispatch",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/six",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/slumber",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/stdlib-list",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/stripe",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tabulate",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tensorflow",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/termcolor",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/toml",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/toposort",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tqdm",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tree-sitter",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tree-sitter-languages",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/ttkthemes",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/typed-ast",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tzlocal",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/ujson",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/untangle",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/urllib3",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/vobject",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/waitress",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/whatthepatch",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/xmltodict",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/xxhash",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/zstd",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/zxcvbn"
+  ],
+  "excludes": [],
+  "checked_directory_allowlist": [
+    "/workspaces/debian/tesisV4"
+  ],
+  "checked_directory_blocklist": [],
+  "extensions": [],
+  "log_path": "/workspaces/debian/tesisV4/.pyre",
+  "global_root": "/workspaces/debian/tesisV4",
+  "debug": false,
+  "python_version": {
+    "major": 3,
+    "minor": 9,
+    "micro": 2
+  },
+  "shared_memory": {},
+  "parallel": true,
+  "number_of_workers": 13,
+  "additional_logging_sections": [],
+  "show_error_traces": false,
+  "strict": false
+}
+2023-10-29 15:34:30,440 [PID 20356] INFO  Initializing shared memory (heap_size: 8589934592, dep_table_pow: 27, hash_table_pow: 26)
+2023-10-29 15:34:30,440 [PID 20356] INFO  Creating environment...
+2023-10-29 15:34:30,440 [PID 20356] INFO  Building module tracker...
+2023-10-29 15:34:30,440 [PID 20356] PERFORMANCE  Module tracker built: 0.290s
+2023-10-29 15:34:30,440 [PID 20356] PERFORMANCE  Full environment built: 0.331s
+2023-10-29 15:34:30,440 [PID 20356] INFO  Collecting all definitions...
+2023-10-29 15:34:30,440 [PID 20356] PERFORMANCE  Collected definitions (defines: 66): 0.009s
+2023-10-29 15:34:30,440 [PID 20356] INFO  Checking 66 functions...
+2023-10-29 15:34:30,808 [PID 20356] ERROR Found 23 type errors!
+2023-10-29 15:46:01,814 [PID 23390] INFO No binary specified, looking for `pyre.bin` in PATH
+2023-10-29 15:46:01,814 [PID 23390] INFO Pyre binary is located at `/workspaces/debian/venv/bin/pyre.bin`
+2023-10-29 15:46:01,815 [PID 23390] INFO Could not determine the number of Pyre workers from configuration. Auto-set the value to 13.
+2023-10-29 15:46:01,817 [PID 23390] INFO No typeshed specified, looking for it...
+2023-10-29 15:46:01,817 [PID 23390] INFO Found: `/workspaces/debian/venv/lib/pyre_check/typeshed`
+2023-10-29 15:46:01,817 [PID 23390] INFO Writing arguments into /tmp/pyre_arguments_169vejj7.json...
+2023-10-29 15:46:01,818 [PID 23390] DEBUG Arguments:
+{
+  "source_paths": {
+    "kind": "simple",
+    "paths": [
+      "/workspaces/debian/tesisV4"
+    ]
+  },
+  "search_paths": [
+    "/workspaces/debian/venv/lib/python3.9/site-packages$parso",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$lightning_utilities",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$attr",
+    "/home/vscode/.local/lib/python3.9/site-packages$importlib_resources",
+    "/home/vscode/.local/lib/python3.9/site-packages$matplotlib",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$typeguard",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$executing",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$ipykernel",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$jinja2",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$charset_normalizer",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$importlib_metadata",
+    "/home/vscode/.local/lib/python3.9/site-packages$contourpy",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$tenacity",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$nbformat",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$tornado",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$IPython",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$alembic",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$filelock",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$attrs",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$prompt_toolkit",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$exceptiongroup",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$traitlets",
+    "/home/vscode/.local/lib/python3.9/site-packages$kiwisolver",
+    "/home/vscode/.local/lib/python3.9/site-packages$packaging",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$torchmetrics",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$optuna",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$libcst",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$colorlog",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$idna",
+    "/home/vscode/.local/lib/python3.9/site-packages$numpy",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$platformdirs",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$rpds",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$pip",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$stack_data",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$jupyter_core",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$zmq",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$asttokens",
+    "/home/vscode/.local/lib/python3.9/site-packages$cycler",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$referencing",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$marshmallow",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$sqlalchemy",
+    "/home/vscode/.local/lib/python3.9/site-packages$pyparsing",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$certifi",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$jupyter_client",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$sympy",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$torch",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$click",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$pure_eval",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$testslide",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$dataclasses_json",
+    "/workspaces/debian/venv/lib/python3.9/site-packages$markupsafe",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stdlib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/D3DShot",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/DateTimeRange",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Deprecated",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/ExifRead",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Flask-Cors",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Flask-Migrate",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Flask-SQLAlchemy",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/JACK-Client",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Markdown",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Pillow",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/PyAutoGUI",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/PyMySQL",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/PyScreeze",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/PyYAML",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Pygments",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/SQLAlchemy",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/Send2Trash",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/aiofiles",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/annoy",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/appdirs",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/aws-xray-sdk",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/babel",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/backports.ssl_match_hostname",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/beautifulsoup4",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/bleach",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/boto",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/braintree",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/cachetools",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/caldav",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/cffi",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/chardet",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/chevron",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/click-spinner",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/colorama",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/commonmark",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/console-menu",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/contextvars",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/croniter",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/dateparser",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/decorator",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/dj-database-url",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/dockerfile-parse",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/docopt",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/docutils",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/editdistance",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/emoji",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/entrypoints",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/first",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-2020",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-bugbear",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-builtins",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-docstrings",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-plugin-utils",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-rst-docstrings",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-simplify",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/flake8-typing-imports",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/fpdf2",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/gdb",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/google-cloud-ndb",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/hdbcli",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/html5lib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/httplib2",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/humanfriendly",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/ibm-db",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/influxdb-client",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/invoke",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/jmespath",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/jsonschema",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/keyboard",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/ldap3",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/mock",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/mypy-extensions",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/mysqlclient",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/netaddr",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/oauthlib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/openpyxl",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/opentracing",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/paho-mqtt",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/paramiko",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/parsimonious",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/passlib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/passpy",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/peewee",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pep8-naming",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pika",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/playsound",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/polib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/prettytable",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/protobuf",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/psutil",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/psycopg2",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyOpenSSL",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyRFC3339",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyasn1",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyaudio",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pycocotools",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pycurl",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyfarmhash",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyflakes",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyinstaller",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pynput",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyserial",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pysftp",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pytest-lazy-fixture",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-crontab",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-datemath",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-dateutil",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-gflags",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-jose",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-nmap",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-slugify",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/python-xlib",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pytz",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pyvmomi",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/pywin32",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/redis",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/regex",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/requests",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/retry",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/setuptools",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/simplejson",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/singledispatch",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/six",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/slumber",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/stdlib-list",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/stripe",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tabulate",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tensorflow",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/termcolor",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/toml",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/toposort",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tqdm",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tree-sitter",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tree-sitter-languages",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/ttkthemes",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/typed-ast",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/tzlocal",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/ujson",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/untangle",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/urllib3",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/vobject",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/waitress",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/whatthepatch",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/xmltodict",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/xxhash",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/zstd",
+    "/workspaces/debian/venv/lib/pyre_check/typeshed/stubs/zxcvbn"
+  ],
+  "excludes": [],
+  "checked_directory_allowlist": [
+    "/workspaces/debian/tesisV4"
+  ],
+  "checked_directory_blocklist": [],
+  "extensions": [],
+  "log_path": "/workspaces/debian/tesisV4/.pyre",
+  "global_root": "/workspaces/debian/tesisV4",
+  "debug": false,
+  "python_version": {
+    "major": 3,
+    "minor": 9,
+    "micro": 2
+  },
+  "shared_memory": {},
+  "parallel": true,
+  "number_of_workers": 13,
+  "additional_logging_sections": [],
+  "show_error_traces": false,
+  "strict": false
+}
+2023-10-29 15:46:02,819 [PID 23390] INFO  Initializing shared memory (heap_size: 8589934592, dep_table_pow: 27, hash_table_pow: 26)
+2023-10-29 15:46:02,819 [PID 23390] INFO  Creating environment...
+2023-10-29 15:46:02,820 [PID 23390] INFO  Building module tracker...
+2023-10-29 15:46:02,820 [PID 23390] PERFORMANCE  Module tracker built: 0.279s
+2023-10-29 15:46:02,820 [PID 23390] PERFORMANCE  Full environment built: 0.316s
+2023-10-29 15:46:02,820 [PID 23390] INFO  Collecting all definitions...
+2023-10-29 15:46:02,820 [PID 23390] PERFORMANCE  Collected definitions (defines: 64): 0.013s
+2023-10-29 15:46:02,820 [PID 23390] INFO  Checking 64 functions...
+2023-10-29 15:46:03,179 [PID 23390] ERROR Found 21 type errors!
+2023-10-29 15:46:43,379 [PID 23714] INFO No binary specified, looking for `pyre.bin` in PATH
+2023-10-29 15:46:43,379 [PID 23714] INFO Could not determine the number of Pyre workers from configuration. Auto-set the value to 13.
+2023-10-29 15:46:43,381 [PID 23714] INFO No typeshed specified, looking for it...
+2023-10-29 15:46:43,381 [PID 23714] INFO Found: `/workspaces/debian/venv/lib/pyre_check/typeshed`
+2023-10-29 15:46:43,382 [PID 23714] ERROR Cannot locate a `watchman` root. Pyre's server will not function properly.
+2023-10-29 15:47:37,470 [PID 24087] DEBUG Using selector: EpollSelector
+2023-10-29 15:47:37,471 [PID 24087] INFO Reading Pyre server configurations...
+2023-10-29 15:47:37,471 [PID 24087] INFO Could not determine the number of Pyre workers from configuration. Auto-set the value to 13.
+2023-10-29 15:47:37,473 [PID 24087] INFO No typeshed specified, looking for it...
+2023-10-29 15:47:37,473 [PID 24087] INFO Found: `/workspaces/debian/venv/lib/pyre_check/typeshed`
+2023-10-29 15:47:37,474 [PID 24087] INFO No binary specified, looking for `pyre.bin` in PATH
+2023-10-29 15:47:37,475 [PID 24087] ERROR Uncaught error in persistent.run
+Traceback (most recent call last):
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/persistent.py", line 309, in run
+    return asyncio.get_event_loop().run_until_complete(
+  File "/usr/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/persistent.py", line 233, in run_persistent
+    initial_server_options = pyre_server_options.read_server_options(
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 129, in read_server_options
+    return server_options_reader()
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 114, in read
+    return PyreServerOptions.create(
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 99, in create
+    return PyreServerOptions.create_from_start_arguments(
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 70, in create_from_start_arguments
+    raise commands.ClientException(
+pyre_check.client.commands.commands.ClientException: Cannot locate a `watchman` root. Pyre's server will not function properly.
+2023-10-29 15:50:13,193 [PID 25696] DEBUG Using selector: EpollSelector
+2023-10-29 15:50:13,193 [PID 25696] INFO Reading Pyre server configurations...
+2023-10-29 15:50:13,194 [PID 25696] INFO Could not determine the number of Pyre workers from configuration. Auto-set the value to 13.
+2023-10-29 15:50:13,196 [PID 25696] INFO No typeshed specified, looking for it...
+2023-10-29 15:50:13,196 [PID 25696] INFO Found: `/workspaces/debian/venv/lib/pyre_check/typeshed`
+2023-10-29 15:50:13,197 [PID 25696] INFO No binary specified, looking for `pyre.bin` in PATH
+2023-10-29 15:50:13,197 [PID 25696] ERROR Uncaught error in persistent.run
+Traceback (most recent call last):
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/persistent.py", line 309, in run
+    return asyncio.get_event_loop().run_until_complete(
+  File "/usr/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/persistent.py", line 233, in run_persistent
+    initial_server_options = pyre_server_options.read_server_options(
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 129, in read_server_options
+    return server_options_reader()
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 114, in read
+    return PyreServerOptions.create(
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 99, in create
+    return PyreServerOptions.create_from_start_arguments(
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 70, in create_from_start_arguments
+    raise commands.ClientException(
+pyre_check.client.commands.commands.ClientException: Cannot locate a `watchman` root. Pyre's server will not function properly.
+2023-10-29 15:50:53,766 [PID 26880] DEBUG Using selector: EpollSelector
+2023-10-29 15:50:53,766 [PID 26880] INFO Reading Pyre server configurations...
+2023-10-29 15:50:53,767 [PID 26880] INFO Could not determine the number of Pyre workers from configuration. Auto-set the value to 13.
+2023-10-29 15:50:53,769 [PID 26880] INFO No typeshed specified, looking for it...
+2023-10-29 15:50:53,769 [PID 26880] INFO Found: `/workspaces/debian/venv/lib/pyre_check/typeshed`
+2023-10-29 15:50:53,770 [PID 26880] INFO No binary specified, looking for `pyre.bin` in PATH
+2023-10-29 15:50:53,771 [PID 26880] ERROR Uncaught error in persistent.run
+Traceback (most recent call last):
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/persistent.py", line 309, in run
+    return asyncio.get_event_loop().run_until_complete(
+  File "/usr/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/persistent.py", line 233, in run_persistent
+    initial_server_options = pyre_server_options.read_server_options(
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 129, in read_server_options
+    return server_options_reader()
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 114, in read
+    return PyreServerOptions.create(
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 99, in create
+    return PyreServerOptions.create_from_start_arguments(
+  File "/workspaces/debian/venv/lib/python3.9/site-packages/pyre_check/client/commands/pyre_server_options.py", line 70, in create_from_start_arguments
+    raise commands.ClientException(
+pyre_check.client.commands.commands.ClientException: Cannot locate a `watchman` root. Pyre's server will not function properly.
+2023-10-29 15:51:13,605 [PID 27063] INFO No binary specified, looking for `pyre.bin` in PATH
+2023-10-29 15:51:13,606 [PID 27063] INFO Could not determine the number of Pyre workers from configuration. Auto-set the value to 13.
+2023-10-29 15:51:13,608 [PID 27063] INFO No typeshed specified, looking for it...
+2023-10-29 15:51:13,608 [PID 27063] INFO Found: `/workspaces/debian/venv/lib/pyre_check/typeshed`
+2023-10-29 15:51:13,609 [PID 27063] ERROR Cannot locate a `watchman` root. Pyre's server will not function properly.
+2023-10-29 15:56:02,165 [PID 29505] DEBUG Using selector: EpollSelector
+2023-10-29 15:56:02,166 [PID 29505] INFO Reading Pyre server configurations...
+2023-10-29 15:56:02,166 [PID 29505] INFO Could not determine the number of Pyre workers from configuration. Auto-set the value to 13.
+2023-10-29 15:56:02,168 [PID 29505] INFO No typeshed specified, looking for it...
+2023-10-29 15:56:02,169 [PID 29505] INFO Found: `/workspaces/debian/venv/lib/pyre_check/typeshed`
+2023-10-29 15:56:02,169 [PID 29505] INFO No binary specified, looking for `pyre.bin` in PATH
+2023-10-29 15:57:24,916 [PID 29505] ERROR 
+2023-10-29 15:57:36,209 [PID 30119] DEBUG Using selector: EpollSelector
+2023-10-29 15:57:36,210 [PID 30119] INFO Reading Pyre server configurations...
+2023-10-29 15:57:36,210 [PID 30119] INFO Could not determine the number of Pyre workers from configuration. Auto-set the value to 13.
+2023-10-29 15:57:36,212 [PID 30119] INFO No typeshed specified, looking for it...
+2023-10-29 15:57:36,212 [PID 30119] INFO Found: `/workspaces/debian/venv/lib/pyre_check/typeshed`
+2023-10-29 15:57:36,213 [PID 30119] INFO No binary specified, looking for `pyre.bin` in PATH
+2023-10-29 15:57:39,453 [PID 30119] ERROR 
+2023-10-29 15:57:59,015 [PID 30321] INFO No binary specified, looking for `pyre.bin` in PATH
+2023-10-29 15:57:59,016 [PID 30321] INFO Could not determine the number of Pyre workers from configuration. Auto-set the value to 13.
+2023-10-29 15:57:59,018 [PID 30321] INFO No typeshed specified, looking for it...
+2023-10-29 15:57:59,018 [PID 30321] INFO Found: `/workspaces/debian/venv/lib/pyre_check/typeshed`
+2023-10-29 15:57:59,019 [PID 30321] DEBUG Using selector: EpollSelector
+2023-10-29 15:58:54,116 [PID 30321] ERROR 

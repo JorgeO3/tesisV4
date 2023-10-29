@@ -27,12 +27,13 @@ scaler_file := "scaler.pkl"
 study_file := "study.csv"
 
 # Synthetic Data Version
-syn_version := "1"
+syn_version := "70"
 syn_folder_name := "gretel_"
 syn_folder := syn_folder_name + syn_version
 
 # Variables for Model Training
 debug := "0"
+n_trials := "100"
 
 # Clean Raw Data (Note: This is no longer necessary as the data is already clean)
 [private]
@@ -54,6 +55,7 @@ check path_to_file:
 setup-model-data n:
     @echo "Setting up data..."
     mkdir -p {{ join(data_dir, n) }}
+    mkdir -p {{ join(results_dir, n, syn_folder) }}
     mv {{ join(data_dir, gretel_synthetic) }} {{ join(data_dir, n, raw_synthetic) }}
 
 # Clean Synthetic Data
@@ -87,9 +89,10 @@ gen-model-data name:
 optimize-model *args:
     @echo "Running model..."
     DEBUG={{ debug }} \
+    N_TRIALS={{ n_trials }} \
     COMMANDS_FILE={{ join(etc_dir, commands_file) }} \
     SCALER_PATH={{ join(etc_dir, scaler_file) }} \
-    STUDY_CSV_PATH={{ join(etc_dir, study_file) }} \
+    STUDY_DIR={{ join(results_dir, syn_folder) }} \
     TEST_DATA_PATH={{ join(data_dir, syn_folder, test_data) }} \
     DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
     SYNTHETIC_DATA_PATH={{ join(data_dir, syn_folder, cleaned_synthetic) }} \
@@ -100,3 +103,6 @@ train-model:
 
 predict-model:
     @echo "Predicting model..."
+
+test:
+    @echo "Hola mundo!"

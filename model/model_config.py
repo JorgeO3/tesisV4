@@ -9,13 +9,14 @@ import pandas as pd
 class ModelConfig:
     SEED = 42
     COMMANDS_FILE = os.environ.get("COMMANDS_FILE")
-    DEBUG = True if os.environ.get("DEBUG") == "1" else False
+    DEBUG = True if os.environ.get("DEBUG") >= "1" else False
 
+    STUDY_DIR = os.environ.get("STUDY_DIR")
     DATA_PATH = os.environ.get("DATA_PATH")
     SCALER_PATH = os.environ.get("SCALER_PATH")
-    STUDY_CSV_PATH = os.environ.get("STUDY_CSV_PATH")
     TEST_DATA_PATH = os.environ.get("TEST_DATA_PATH")
     SYNTHETIC_DATA_PATH = os.environ.get("SYNTHETIC_DATA_PATH")
+    N_TRIALS = os.environ.get("N_TRIALS")
 
     def __init__(self) -> None:
         random.seed(self.SEED)

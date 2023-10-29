@@ -17,6 +17,7 @@ class Cli:
             "int": int,
             "str": str,
         }
+
         # Usar with para la lectura de archivos
         with open(self.commands_path, "r") as file:
             commands = yaml.load(file, Loader=yaml.FullLoader)["commands"]
