@@ -5,7 +5,7 @@ from .model_config import ModelConfig
 
 class Cli:
     def __init__(self) -> None:
-        self.commands_path = ModelConfig.COMANDS_FILE
+        self.commands_path = ModelConfig.COMMANDS_FILE
 
     def parse_args(self):
         args = self.generate_args()

@@ -1,3 +1,5 @@
+import sys
+
 from model.cli import Cli
 from model.model_config import ModelConfig
 from model.model_trainer import ModelTraining
@@ -32,6 +34,8 @@ def main():
     model_config.enable_gpu(gpu)
     model_config.set_num_threads(threads)
     model_config.set_num_layers(layers)
+
+    sys.exit(0)
 
     execution_strategy = ModelStrategyFactory.get_model(mode, model_config)
     if execution_strategy is not None:
