@@ -21,10 +21,10 @@ class ModelConfig:
 		"t(h)",
 	]
 
-	DEBUG = True if os.environ.get("DEBUG") >= "1" else False
-	SAVE_SCALER = True if os.environ.get("SAVE_SCALER") >= "1" else False
 	N_TRIALS = os.environ.get("N_TRIALS")
-	STOPPING = os.environ.get("STOPPING")
+	DEBUG = True if os.environ.get("DEBUG") >= "1" else False
+	STOPPING = True if os.environ.get("STOPPING") >= "1" else False
+	SAVE_SCALER = True if os.environ.get("SAVE_SCALER") >= "1" else False
 
 	DATA_PATH = os.environ.get("DATA_PATH")
 	STUDY_DIR = os.environ.get("STUDY_DIR")
