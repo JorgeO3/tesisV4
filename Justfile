@@ -33,7 +33,9 @@ syn_folder := syn_folder_name + syn_version
 
 # Variables for Model Training
 debug := "0"
-n_trials := "100"
+n_trials := "500"
+save_scaler := "0"
+stopping := "0"
 
 # Clean Raw Data (Note: This is no longer necessary as the data is already clean)
 [private]
@@ -90,6 +92,8 @@ optimize-model *args:
     @echo "Running model..."
     DEBUG={{ debug }} \
     N_TRIALS={{ n_trials }} \
+    STOPPING={{ stopping }} \
+    SAVE_SCALER={{ save_scaler }} \
     COMMANDS_FILE={{ join(etc_dir, commands_file) }} \
     SCALER_PATH={{ join(etc_dir, scaler_file) }} \
     STUDY_DIR={{ join(results_dir, syn_folder) }} \

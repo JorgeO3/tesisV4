@@ -1,0 +1,6 @@
+src = ["model", "data"]
+line-length = 100
+
+[format]
+quote-style = "double"
+indent-style = "tab"
