@@ -39,9 +39,8 @@ class ModelConfig:
         torch.cuda.manual_seed(self.SEED)
         torch.cuda.manual_seed_all(self.SEED)
         pd.set_option("display.max_rows", None)
-        self.GENERATOR = torch.Generator().manual_seed(self.SEED)
 
-        torch.backends.cudnn.enabled = False
+        # torch.backends.cudnn.enabled = False
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
 
@@ -58,7 +57,7 @@ class ModelConfig:
         if gpu:
             self.DEVICE = torch.device("cuda:0")
 
-    def set_num_threads(self, num_threads: int):
+    def set_num_threads(self, num_threads):
         """
         Sets the number of CPU threads used.
         """

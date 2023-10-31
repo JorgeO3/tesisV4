@@ -9,7 +9,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from torchmetrics.functional.regression.r2 import r2_score
 
-from .utils import seed_worker
 from .model_config import ModelConfig
 from .mlp_dataset import ModelDataset
 
@@ -27,12 +26,7 @@ class Model:
     def gen_data(self, data):
         x, y = self.split_data(data)
         dataset = ModelDataset(x, y)
-        return DataLoader(
-            dataset,
-            batch_size=self.params["batch_size"],
-            generator=self.config.GENERATOR,
-            worker_init_fn=seed_worker,
-        )
+        return DataLoader(dataset, batch_size=self.params["batch_size"])
 
     def split_data(self, data):
         length = len(self.config.INPUT_VARS)
@@ -77,6 +71,7 @@ class Model:
         x_test = th.tensor(x_test, dtype=th.float32).to(device)
         y_test = th.tensor(y_test, dtype=th.float32).to(device)
 
+        th.manual_seed(self.config.SEED)
         for i in range(self.params["num_epochs"]):
             self.core.train()
 

@@ -20,20 +20,20 @@ class ModelTraining(ModelExecutionStrategy):
 
     def params(self):
         return {
-            "n_layers": 1,
-            "batch_size": 20,
-            "num_epochs": 150,
+            "n_layers": 2,
+            "batch_size": 70,
+            "num_epochs": 500,
             "train_size": 0.8,
-            "weight_decay": 0.001,
-            "learning_rate": 0.001,
+            "weight_decay": 0.0001,
+            "learning_rate": 0.1,
         }
 
     def execute(self):
         # The first layer is 9 because the input has 9 variables
         # The last layer is 3 because the output has 3 variables
-        layers = [9, *[24], 3]
+        layers = [9, *[6, 17], 3]
 
-        activations = [self.activation_functions("Leaky"), self.activation_functions("Tanh")]
+        activations = [self.activation_functions("Sigmoid"), self.activation_functions("Leaky")]
         params = self.params()
 
         net = MLP(layers, activations)

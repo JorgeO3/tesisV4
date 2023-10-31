@@ -33,7 +33,7 @@ syn_folder := syn_folder_name + syn_version
 
 # Variables for Model Training
 debug := "0"
-stopping := "0"
+stopping := "1"
 n_trials := "500"
 save_model := "0"
 

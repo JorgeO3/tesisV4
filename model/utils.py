@@ -1,8 +1,10 @@
 import os
+import torch
 import random
 import numpy as np
-import torch as th
+import pandas as pd
 from datetime import datetime
+from .model_config import ModelConfig
 
 
 def create_study_path(vars, study_dir_path):
@@ -12,7 +14,15 @@ def create_study_path(vars, study_dir_path):
     return os.path.join(study_dir_path, study_file)
 
 
-def seed_worker(worker_id):
-    worker_seed = th.initial_seed() % 2**32
-    np.random.seed(worker_seed)
-    random.seed(worker_seed)
+def global_seed():
+    SEED = ModelConfig.SEED
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    torch.cuda.manual_seed(SEED)
+    torch.cuda.manual_seed_all(SEED)
+    pd.set_option("display.max_rows", None)
+
+    # torch.backends.cudnn.enabled = False
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True

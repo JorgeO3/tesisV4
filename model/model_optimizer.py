@@ -4,7 +4,7 @@ from optuna.samplers import TPESampler
 
 from .model import Model
 from .model_architecure import MLP
-from .utils import create_study_path
+from .utils import create_study_path, global_seed
 from .model_config import ModelConfig
 from .model_execution_strategy import ModelExecutionStrategy
 
@@ -48,6 +48,7 @@ class ModelOptimization(ModelExecutionStrategy):
         return functions[activation_name]
 
     def trial(self, trial: optuna.trial.Trial) -> float:
+        global_seed()
         max_layers = self.config.NUM_LAYERS
         fl_range = (1, 24)
         train_size_range = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
@@ -76,19 +77,6 @@ class ModelOptimization(ModelExecutionStrategy):
             activations.append(self.activation_functions(activation))
 
         layers.append(len(self.config.ACTIVE_RESPONSE_VARS))
-
-        # ======================TEST======================
-        params = {
-            "n_layers": 1,
-            "batch_size": 20,
-            "num_epochs": 150,
-            "train_size": 0.8,
-            "weight_decay": 0.001,
-            "learning_rate": 0.001,
-        }
-        layers = [9, *[24], 3]
-        activations = [self.activation_functions("Leaky"), self.activation_functions("Tanh")]
-        # ======================TEST======================
 
         # Instance base model and pass everything
         core = MLP(layers, activations)
