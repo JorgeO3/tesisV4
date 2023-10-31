@@ -33,9 +33,9 @@ syn_folder := syn_folder_name + syn_version
 
 # Variables for Model Training
 debug := "0"
-n_trials := "500"
-save_scaler := "0"
 stopping := "0"
+n_trials := "500"
+save_model := "0"
 
 # Clean Raw Data (Note: This is no longer necessary as the data is already clean)
 [private]
@@ -51,6 +51,15 @@ check path_to_file:
     @echo "Checking data..."
     FILE_PATH={{ join(data_dir, path_to_file) }} \
     {{ python_exec }} {{ script_dir }}/check_data.py
+
+[private]
+mix-merge:
+    @echo "Mixing and merging data..."
+    @echo "And saving the result in: {{raw_data}}"
+    RAW_DATA_FILE={{ join(data_dir, raw_data) }} \
+    CLEANED_FILE={{ join(data_dir, cleaned_data) }} \
+    {{ python_exec }} {{ script_dir }}/mix_merge_data.py
+
 
 # Create Folder Structure for Synthetic Data
 [private]
@@ -72,12 +81,13 @@ clean-synthetic n:
 
 # Split Data into Training and Testing Sets
 [private]
-split-data n:
+mix-split n:
     @echo "Splitting data into train and test..."
-    DATA_PATH={{ join(data_dir, cleaned_data) }} \
+    SYNTHETIC_DATA_PATH={{ join(data_dir, syn_folder, cleaned_synthetic) }} \
     TRAIN_FILE_PATH={{ join(data_dir, n, train_data) }} \
     TEST_FILE_PATH={{ join(data_dir, n, test_data) }} \
-    {{ python_exec }} {{ script_dir }}/split_data.py
+    DATA_PATH={{ join(data_dir, cleaned_data) }} \
+    {{ python_exec }} {{ script_dir }}/mix_split.py
 
 # Setup Data for the Model; n: Synthetic Data Version
 gen-model-data name:
@@ -85,28 +95,55 @@ gen-model-data name:
     @just setup-model-data {{ name }}
     @just check {{ join(name, raw_synthetic) }}
     @just clean-synthetic {{ name }}
-    @just split-data {{ name }}
+    @just mix-split {{ name }}
 
 # Optimize the Model
 optimize-model *args:
-    @echo "Running model..."
+    @echo "Optimizing model..."
     DEBUG={{ debug }} \
     N_TRIALS={{ n_trials }} \
     STOPPING={{ stopping }} \
-    SAVE_SCALER={{ save_scaler }} \
+    SAVE_MODEL={{ save_model }} \
+    COMMANDS_FILE={{ join(etc_dir, commands_file) }} \
+    SCALER_PATH={{ join(etc_dir, scaler_file) }} \
+    STUDY_DIR={{ join(results_dir, syn_folder) }} \
+    TEST_DATA_PATH={{ join(data_dir, syn_folder, test_data) }} \
+    TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
+    {{ python_exec }} {{ project_dir }}/main.py optimization {{ args }}
+
+# Manual model training
+train-model *args:
+    @echo "Training model..."
+    DEBUG={{ debug }} \
+    STOPPING={{ stopping }} \
+    SAVE_MODEL={{ save_model }} \
+    COMMANDS_FILE={{ join(etc_dir, commands_file) }} \
+    SCALER_PATH={{ join(etc_dir, scaler_file) }} \
+    TEST_DATA_PATH={{ join(data_dir, syn_folder, test_data) }} \
+    TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
+    {{ python_exec }} {{ project_dir }}/main.py training {{ args }}
+
+debugging:
+    @echo "Debugging..."
+    DEBUG={{ debug }} \
+    N_TRIALS={{ n_trials }} \
+    STOPPING={{ stopping }} \
+    SAVE_MODEL={{ save_model }} \
     COMMANDS_FILE={{ join(etc_dir, commands_file) }} \
     SCALER_PATH={{ join(etc_dir, scaler_file) }} \
     STUDY_DIR={{ join(results_dir, syn_folder) }} \
     TEST_DATA_PATH={{ join(data_dir, syn_folder, test_data) }} \
     DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
     SYNTHETIC_DATA_PATH={{ join(data_dir, syn_folder, cleaned_synthetic) }} \
-    {{ python_exec }} {{ project_dir }}/main.py {{ args }}
-
-train-model:
-    @echo "Training model..."
+    {{"cd /workspaces/debian ; /usr/bin/env /workspaces/debian/venv/bin/python /home/vscode/.vscode-server/extensions/ms-python.python-2023.18.0/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher 45447 -- /workspaces/debian/tesisV4/main.py optimization --ts --wvp --e --gpu --threads 3 --layers 2"}}
 
 predict-model:
     @echo "Predicting model..."
 
 test:
-    @echo "Hola mundo!"
+    @echo "Splitting data into train and test..."
+    SYNTHETIC_DATA_PATH={{ join(data_dir, syn_folder, cleaned_synthetic) }} \
+    TRAIN_FILE_PATH={{ join(data_dir, syn_folder, train_data) }} \
+    TEST_FILE_PATH={{ join(data_dir, syn_folder, test_data) }} \
+    DATA_PATH={{ join(data_dir, cleaned_data) }} \
+    {{ python_exec }} {{ script_dir }}/mix_split.py
