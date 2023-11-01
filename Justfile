@@ -1,4 +1,10 @@
-# just manual: https://github.com/casey/just#readme
+set positional-arguments
+
+watch +args='test':
+  cargo watch --clear --exec '{{args}}'
+
+ci: clippy forbid
+  cargo fmt -- --check
 
 # Shell Configuration and Project Paths
 set shell := ["fish", "-c"]
