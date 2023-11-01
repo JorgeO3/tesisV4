@@ -36,9 +36,11 @@ commands:
     action: null
     help: Enable number of threads
     type: int
+    default: 1
     choices: null
 
   - command: "--layers"
+    required: true
     action: null
     help: Set number of model layers
     type: int

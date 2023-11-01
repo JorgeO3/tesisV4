@@ -1,4 +1,7 @@
+import sys
+
 import joblib
+import numpy as np
 import torch as th
 import pandas as pd
 import torch.nn as nn
@@ -13,24 +16,36 @@ from .model_config import ModelConfig
 from .mlp_dataset import ModelDataset
 
 
+def compute_mre(preds, target, epsilon=1e-10):
+    mre = th.mean(th.abs(preds - target) / (th.abs(target) + epsilon)) * 100
+    return mre.item()
+
+
 class Model:
     def __init__(self, config: ModelConfig, core, params) -> None:
         self.config = config
         self.core = core
         self.params = params
 
-    def compute_mre(self, preds, target, epsilon=1e-10):
-        mre = th.mean(th.abs(preds - target) / (th.abs(target) + epsilon)) * 100
-        return mre.item()
+    # loss function and optimizer
+    def loss_fn(self, output, target):
+        # MAPE loss
+        return th.mean(th.abs((target - output) / target))
+
+    def transform_data(self, data):
+        resp_vars = self.config.IND_RESPONSE_VARS
+        data[:, resp_vars] = np.log1p(data[:, resp_vars])
+        return data
 
     def gen_data(self, data):
         x, y = self.split_data(data)
         dataset = ModelDataset(x, y)
         return DataLoader(dataset, batch_size=self.params["batch_size"])
 
-    def split_data(self, data):
-        length = len(self.config.INPUT_VARS)
-        return data[:, :length], data[:, length:]
+    def split_data(self, data) -> tuple[np.ndarray, np.ndarray]:
+        inp_vars = len(self.config.INPUT_VARS)
+        resp_vars = self.config.IND_RESPONSE_VARS
+        return data[:, :inp_vars], data[:, resp_vars]
 
     def scale_data(self, train, test):
         scaler = StandardScaler()
@@ -61,6 +76,8 @@ class Model:
         )
 
         data = pd.read_csv(self.config.TRAIN_DATA_PATH)
+        # data = self.transform_data(data.values)
+
         train, test = train_test_split(data, train_size=self.params["train_size"], random_state=42)
         train, test = self.scale_data(train, test)
 
@@ -91,7 +108,7 @@ class Model:
                 y_pred = self.core(x_test)
 
                 mse = loss_fn(y_pred, y_test)
-                mre = self.compute_mre(y_pred, y_test)
+                mre = compute_mre(y_pred, y_test)
                 r2 = r2_score(y_pred, y_test)
                 mre_list.append(mre)
 

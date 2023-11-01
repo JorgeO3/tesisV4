@@ -33,6 +33,13 @@ class ModelConfig:
     TRAIN_DATA_PATH = os.environ.get("TRAIN_DATA_PATH")
 
     def __init__(self) -> None:
+        self.NUM_LAYERS = None
+        self.DEVICE = None
+        self.ACTIVE_RESPONSE_VARS = None
+        self.NUM_RESPONSE_VARS = None
+        self.IND_RESPONSE_VARS = None
+
+        #TODO: Fix the problem of seeds, it is not working for reproducibility
         random.seed(self.SEED)
         np.random.seed(self.SEED)
         torch.manual_seed(self.SEED)
@@ -49,6 +56,15 @@ class ModelConfig:
         Sets the active response variables of the model.
         """
         self.ACTIVE_RESPONSE_VARS = active_resp_vars
+        self.IND_RESPONSE_VARS = []
+        #TODO: Fix this shit
+        if "TS" in active_resp_vars:
+            self.IND_RESPONSE_VARS.append(9)
+        if "WVP" in active_resp_vars:
+            self.IND_RESPONSE_VARS.append(10)
+        if "E" in active_resp_vars:
+            self.IND_RESPONSE_VARS.append(11)
+        
 
     def enable_gpu(self, gpu: bool = False):
         """

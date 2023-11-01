@@ -26,9 +26,10 @@ class ModelStrategyFactory:
 
 
 def main():
-    model_config = ModelConfig()
     mode, resp_vars, gpu, threads, layers = Cli().parse_args()
+    print(mode, resp_vars, gpu, threads, layers)
 
+    model_config = ModelConfig()
     model_config.set_active_resp_vars(resp_vars)
     model_config.enable_gpu(gpu)
     model_config.set_num_threads(threads)

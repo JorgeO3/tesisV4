@@ -1,8 +1,10 @@
+# just manual: https://github.com/casey/just#readme
+
 # Shell Configuration and Project Paths
 set shell := ["fish", "-c"]
-root_dir := "/workspaces/debian"
-python_exec := root_dir / "venv/bin/python"
+root_dir := "/home/jorge/Documents/projects/"
 project_dir := root_dir / "tesisV4"
+python_exec := project_dir / "venv/bin/python"
 script_dir := project_dir / "scripts"
 data_dir := project_dir / "data"
 etc_dir := project_dir / "etc"
@@ -33,9 +35,12 @@ syn_folder := syn_folder_name + syn_version
 
 # Variables for Model Training
 debug := "0"
-stopping := "1"
+stopping := "0"
 n_trials := "500"
 save_model := "0"
+
+_default:
+	just --list
 
 # Clean Raw Data (Note: This is no longer necessary as the data is already clean)
 [private]
@@ -123,22 +128,18 @@ train-model *args:
     TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
     {{ python_exec }} {{ project_dir }}/main.py training {{ args }}
 
-debugging:
-    @echo "Debugging..."
-    DEBUG={{ debug }} \
-    N_TRIALS={{ n_trials }} \
-    STOPPING={{ stopping }} \
-    SAVE_MODEL={{ save_model }} \
-    COMMANDS_FILE={{ join(etc_dir, commands_file) }} \
-    SCALER_PATH={{ join(etc_dir, scaler_file) }} \
-    STUDY_DIR={{ join(results_dir, syn_folder) }} \
-    TEST_DATA_PATH={{ join(data_dir, syn_folder, test_data) }} \
-    DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
-    SYNTHETIC_DATA_PATH={{ join(data_dir, syn_folder, cleaned_synthetic) }} \
-    {{"cd /workspaces/debian ; /usr/bin/env /workspaces/debian/venv/bin/python /home/vscode/.vscode-server/extensions/ms-python.python-2023.18.0/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher 45447 -- /workspaces/debian/tesisV4/main.py optimization --ts --wvp --e --gpu --threads 3 --layers 2"}}
-
 predict-model:
     @echo "Predicting model..."
+
+
+train-manual-model *args:
+    DEBUG={{ debug }} \
+    STOPPING={{ stopping }} \
+    SAVE_MODEL={{ save_model }} \
+    SCALER_PATH={{ join(etc_dir, scaler_file) }} \
+    TEST_DATA_PATH={{ join(data_dir, syn_folder, test_data) }} \
+    TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
+
 
 test:
     @echo "Splitting data into train and test..."
