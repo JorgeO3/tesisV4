@@ -1,11 +1,3 @@
-set positional-arguments
-
-watch +args='test':
-  cargo watch --clear --exec '{{args}}'
-
-ci: clippy forbid
-  cargo fmt -- --check
-
 # Shell Configuration and Project Paths
 set shell := ["fish", "-c"]
 root_dir := "/home/jorge/Documents/projects/"
