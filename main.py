@@ -2,7 +2,7 @@ from model.cli import Cli
 from model.model_config import ModelConfig
 from model.model_trainer import ModelTraining
 from model.model_predictor import ModelPrediction
-from model.model_optimizer import ModelOptimization
+from model.model_optimizer import HyperparameterOptimizer
 from model.model_execution_strategy import ModelExecutionStrategy
 
 
@@ -19,7 +19,7 @@ class ModelStrategyFactory:
     def get_model(mode, config: ModelConfig):
         models = {
             "training": ModelTraining(config),
-            "optimization": ModelOptimization(config),
+            "optimization": HyperparameterOptimizer(config),
             "prediction": ModelPrediction(config),
         }
         return models.get(mode)

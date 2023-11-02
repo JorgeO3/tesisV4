@@ -19,11 +19,13 @@ gretel_synthetic := "data_preview.csv"
 
 # Training and Testing Data
 train_data := "train_data.csv"
-test_data := "test_data.csv"
+val_data := "val_data.csv"
 
 # Configuration Files and Scalers
 commands_file := "commands.yaml"
 scaler_file := "scaler.pkl"
+scaler_x := "scaler_x.pkl"
+scaler_y := "scaler_y.pkl"
 study_file := "study.csv"
 
 # Synthetic Data Version
@@ -34,11 +36,8 @@ syn_folder := syn_folder_name + syn_version
 # Variables for Model Training
 debug := "0"
 stopping := "0"
-n_trials := "500"
+n_trials := "20"
 save_model := "0"
-
-_default:
-	just --list
 
 # Clean Raw Data (Note: This is no longer necessary as the data is already clean)
 [private]
@@ -88,7 +87,7 @@ mix-split n:
     @echo "Splitting data into train and test..."
     SYNTHETIC_DATA_PATH={{ join(data_dir, syn_folder, cleaned_synthetic) }} \
     TRAIN_FILE_PATH={{ join(data_dir, n, train_data) }} \
-    TEST_FILE_PATH={{ join(data_dir, n, test_data) }} \
+    TEST_FILE_PATH={{ join(data_dir, n, val_data) }} \
     DATA_PATH={{ join(data_dir, cleaned_data) }} \
     {{ python_exec }} {{ script_dir }}/mix_split.py
 
@@ -108,9 +107,10 @@ optimize-model *args:
     STOPPING={{ stopping }} \
     SAVE_MODEL={{ save_model }} \
     COMMANDS_FILE={{ join(etc_dir, commands_file) }} \
-    SCALER_PATH={{ join(etc_dir, scaler_file) }} \
+    SCALER_X={{ join(etc_dir, scaler_x) }} \
+    SCALER_X={{ join(etc_dir, scaler_y) }} \
     STUDY_DIR={{ join(results_dir, syn_folder) }} \
-    TEST_DATA_PATH={{ join(data_dir, syn_folder, test_data) }} \
+    val_data_PATH={{ join(data_dir, syn_folder, val_data) }} \
     TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
     {{ python_exec }} {{ project_dir }}/main.py optimization {{ args }}
 
@@ -122,7 +122,7 @@ train-model *args:
     SAVE_MODEL={{ save_model }} \
     COMMANDS_FILE={{ join(etc_dir, commands_file) }} \
     SCALER_PATH={{ join(etc_dir, scaler_file) }} \
-    TEST_DATA_PATH={{ join(data_dir, syn_folder, test_data) }} \
+    val_data_PATH={{ join(data_dir, syn_folder, val_data) }} \
     TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
     {{ python_exec }} {{ project_dir }}/main.py training {{ args }}
 
@@ -130,19 +130,21 @@ predict-model:
     @echo "Predicting model..."
 
 
-train-manual-model *args:
+train-manual-model model:
     DEBUG={{ debug }} \
     STOPPING={{ stopping }} \
     SAVE_MODEL={{ save_model }} \
-    SCALER_PATH={{ join(etc_dir, scaler_file) }} \
-    TEST_DATA_PATH={{ join(data_dir, syn_folder, test_data) }} \
+    SCALER_X={{ join(etc_dir, scaler_x) }} \
+    SCALER_Y={{ join(etc_dir, scaler_y) }} \
+    VAL_DATA_PATH={{ join(data_dir, syn_folder, val_data) }} \
     TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
+    {{ python_exec }} {{ etc_dir }}/{{ model }}.py
 
 
 test:
     @echo "Splitting data into train and test..."
     SYNTHETIC_DATA_PATH={{ join(data_dir, syn_folder, cleaned_synthetic) }} \
     TRAIN_FILE_PATH={{ join(data_dir, syn_folder, train_data) }} \
-    TEST_FILE_PATH={{ join(data_dir, syn_folder, test_data) }} \
+    TEST_FILE_PATH={{ join(data_dir, syn_folder, val_data) }} \
     DATA_PATH={{ join(data_dir, cleaned_data) }} \
     {{ python_exec }} {{ script_dir }}/mix_split.py

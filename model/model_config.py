@@ -27,10 +27,11 @@ class ModelConfig:
     SAVE_MODEL = True if os.environ.get("SAVE_MODEL") == "1" else False
 
     STUDY_DIR = os.environ.get("STUDY_DIR")
-    SCALER_PATH = os.environ.get("SCALER_PATH")
     COMMANDS_FILE = os.environ.get("COMMANDS_FILE")
     TEST_DATA_PATH = os.environ.get("TEST_DATA_PATH")
     TRAIN_DATA_PATH = os.environ.get("TRAIN_DATA_PATH")
+    SCALER_X = os.environ.get("SCALER_X")
+    SCALER_Y = os.environ.get("SCALER_Y")
 
     def __init__(self) -> None:
         self.NUM_LAYERS = None
@@ -39,7 +40,7 @@ class ModelConfig:
         self.NUM_RESPONSE_VARS = None
         self.IND_RESPONSE_VARS = None
 
-        #TODO: Fix the problem of seeds, it is not working for reproducibility
+        # TODO: Fix the problem of seeds, it is not working for reproducibility
         random.seed(self.SEED)
         np.random.seed(self.SEED)
         torch.manual_seed(self.SEED)
@@ -57,14 +58,13 @@ class ModelConfig:
         """
         self.ACTIVE_RESPONSE_VARS = active_resp_vars
         self.IND_RESPONSE_VARS = []
-        #TODO: Fix this shit
+        # TODO: Fix this shit
         if "TS" in active_resp_vars:
             self.IND_RESPONSE_VARS.append(9)
         if "WVP" in active_resp_vars:
             self.IND_RESPONSE_VARS.append(10)
         if "E" in active_resp_vars:
             self.IND_RESPONSE_VARS.append(11)
-        
 
     def enable_gpu(self, gpu: bool = False):
         """
