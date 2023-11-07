@@ -24,7 +24,7 @@ SEED = 42
 DEBUG = os.environ.get("DEBUG") == "1"
 EARLY_STOPPING = os.environ.get("STOPPING") == "1"
 SAVE_MODEL = os.environ.get("SAVE_MODEL") == "1"
-ACTIVE_RESPONSE_VARIABLES = ["WVP"]
+ACTIVE_RESPONSE_VARIABLES = ["TS"]
 RESPONSE_VARIABLES = ["TS", "WVP", "%E"]
 SCALER_X_PATH = os.environ.get("SCALER_X")
 SCALER_Y_PATH = os.environ.get("SCALER_Y")
@@ -57,9 +57,9 @@ class MLP(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(input_size, 20),
+            nn.Linear(input_size, 24),
             nn.Tanh(),
-            nn.Linear(20, output_size),
+            nn.Linear(24, output_size),
         )
 
     def forward(self, x):
@@ -120,11 +120,13 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
             # rmse = mean_squared_error(prediction, target, False)
             # mre = compute_mre(prediction, target).flatten()[0]
 
+            # fmt: off
             # Transformar las predicciones, objetivos y características a la escala original
             input_feature = scaler_x.inverse_transform(input_feature.cpu().numpy().reshape(1, -1))
-            prediction = scaler_y.inverse_transform(prediction.cpu().numpy().reshape(1, -1))
-            target = scaler_y.inverse_transform(target.cpu().numpy().reshape(1, -1))
-
+            prediction = scaler_y.inverse_transform(prediction.cpu().numpy().reshape(1, -1)).flatten()
+            target = scaler_y.inverse_transform(target.cpu().numpy().reshape(1, -1)).flatten()
+            # fmt: on
+            np.square
             prediction = np.expm1(prediction).flatten()
             target = np.expm1(target).flatten()
 
@@ -138,8 +140,8 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
                 input_feature,
                 columns=["%Chi", "%Gel", "%Gly", "%Pec", "%Sta", "%Oil", "T(°C)", "%RH", "t(h)"],
             )
-            target_df = pd.DataFrame(target, columns=["WVP"])
-            pred_df = pd.DataFrame(prediction, columns=["WVP"])
+            target_df = pd.DataFrame(target, columns=ACTIVE_RESPONSE_VARIABLES)
+            pred_df = pd.DataFrame(prediction, columns=ACTIVE_RESPONSE_VARIABLES)
 
             # Reducir el número de decimales para una mejor visualización
             pd.options.display.float_format = "{:,.2f}".format
@@ -252,11 +254,11 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
 
 
 # Example parameters
-batch_size = 24
-num_epochs = 256
-train_size = 0.6783661371761389
-weight_decay = 0.00011544148510582894
-learning_rate = 0.0025468843743121163
+batch_size = 44
+num_epochs = 491
+train_size = 0.7563958920022334
+weight_decay = 1.280263510754911e-04
+learning_rate = 0.003175953014500801
 
 if __name__ == "__main__":
     main(batch_size, num_epochs, train_size, weight_decay, learning_rate)
