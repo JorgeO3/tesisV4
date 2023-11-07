@@ -34,7 +34,7 @@ syn_folder_name := "gretel_"
 syn_folder := syn_folder_name + syn_version
 
 # Variables for Model Training
-debug := "1"
+debug := "0"
 stopping := "0"
 n_trials := "500"
 save_model := "0"
