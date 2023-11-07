@@ -1,4 +1,5 @@
 import optuna
+import numpy as np
 from torch import nn
 from optuna.samplers import TPESampler
 
@@ -15,6 +16,14 @@ def get_activation_function(name):
         "Tanh": nn.Tanh(),
         "Sigmoid": nn.Sigmoid(),
         "Leaky": nn.LeakyReLU(),
+    }[name]
+
+
+def get_transformation_function(name):
+    return {
+        "log": np.log,
+        "sqrt": np.sqrt,
+        "none": lambda x: x,
     }[name]
 
 
@@ -45,7 +54,7 @@ class HyperparameterOptimizer(ModelExecutionStrategy):
         results_path = create_study_path(self.config.ACTIVE_RESPONSE_VARS, self.config.STUDY_DIR)
         results_df.to_csv(results_path, index=False)
 
-    def optimize_model(self, trial):
+    def optimize_model(self, trial: optuna.Trial):
         global_seed()
 
         # fmt: off
@@ -64,21 +73,22 @@ class HyperparameterOptimizer(ModelExecutionStrategy):
             + [trial.suggest_int(f"layer_{i + 1}", 1, 24) for i in range(hyperparams["num_layers"])]
             + [len(self.config.ACTIVE_RESPONSE_VARS)]
         )
+
+        # fmt: off
         activation_funcs = [
             get_activation_function(
-                trial.suggest_categorical(
-                    f"activation_{i + 1}", ["ReLU", "Tanh", "Sigmoid", "Leaky"]
-                )
+                trial.suggest_categorical(f"activation_{i + 1}", ["ReLU", "Tanh", "Sigmoid", "Leaky"])
             )
             for i in range(hyperparams["num_layers"])
         ]
+        # fmt: on
 
         neural_network = Net(layer_sizes, activation_funcs)
         model_instance = NeuralNetworkModel(self.config, neural_network, hyperparams)
 
-        mse, mape_metric, r2_score = model_instance.run()
+        mse, mape, r2_score = model_instance.run()
         trial.set_user_attr("mse", mse.item())
-        trial.set_user_attr("mre", mape_metric)
+        trial.set_user_attr("mape", mape.item())
         trial.set_user_attr("r2", r2_score.item())
 
         return mse

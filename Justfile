@@ -34,9 +34,9 @@ syn_folder_name := "gretel_"
 syn_folder := syn_folder_name + syn_version
 
 # Variables for Model Training
-debug := "0"
+debug := "1"
 stopping := "0"
-n_trials := "20"
+n_trials := "500"
 save_model := "0"
 
 # Clean Raw Data (Note: This is no longer necessary as the data is already clean)
