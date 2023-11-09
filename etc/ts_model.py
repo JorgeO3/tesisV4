@@ -57,9 +57,9 @@ class MLP(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(input_size, 24),
-            nn.Tanh(),
-            nn.Linear(24, output_size),
+            nn.Linear(input_size, 22),
+            nn.ReLU(),
+            nn.Linear(22, output_size),
         )
 
     def forward(self, x):
@@ -254,11 +254,11 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
 
 
 # Example parameters
-batch_size = 44
-num_epochs = 491
-train_size = 0.7563958920022334
-weight_decay = 1.280263510754911e-04
-learning_rate = 0.003175953014500801
+batch_size = 41
+num_epochs = 272
+train_size = 0.667622043568205
+weight_decay = 6.90850978031227e-05
+learning_rate = 0.02441733160883885
 
 if __name__ == "__main__":
     main(batch_size, num_epochs, train_size, weight_decay, learning_rate)
