@@ -2,11 +2,17 @@
 set shell := ["fish", "-c"]
 root_dir := "/home/jorge/Documents/projects/"
 project_dir := root_dir / "tesisV4"
-python_exec := project_dir / "venv/bin/python"
-script_dir := project_dir / "scripts"
-data_dir := project_dir / "data"
+
+api_dir := project_dir / "api"
 etc_dir := project_dir / "etc"
+data_dir := project_dir / "data"
+script_dir := project_dir / "scripts"
 results_dir := project_dir / "results"
+python_exec := project_dir / "venv/bin/python"
+trained_models_dir := project_dir / "trained_models"
+e_model_dir := trained_models_dir / "e"
+ts_model_dir := trained_models_dir / "ts"
+wvp_model_dir := trained_models_dir / "wvp"
 
 # Data Files Configuration
 raw_data := "raw_data.csv"
@@ -21,12 +27,13 @@ gretel_synthetic := "data_preview.csv"
 train_data := "train_data.csv"
 val_data := "val_data.csv"
 
-# Configuration Files and Scalers
-commands_file := "commands.yaml"
-scaler_file := "scaler.pkl"
+# Configuration Files, Scalers and Model
+model_file := "model.pt"
+study_file := "study.csv"
 scaler_x := "scaler_x.pkl"
 scaler_y := "scaler_y.pkl"
-study_file := "study.csv"
+scaler_file := "scaler.pkl"
+commands_file := "commands.yaml"
 
 # Synthetic Data Version
 syn_version := "70"
@@ -37,7 +44,7 @@ syn_folder := syn_folder_name + syn_version
 debug := "1"
 stopping := "0"
 n_trials := "500"
-save_model := "0"
+save_model := "1"
 
 # Clean Raw Data (Note: This is no longer necessary as the data is already clean)
 [private]
@@ -134,11 +141,12 @@ train-manual-model model:
     DEBUG={{ debug }} \
     STOPPING={{ stopping }} \
     SAVE_MODEL={{ save_model }} \
-    SCALER_X={{ join(etc_dir, scaler_x) }} \
-    SCALER_Y={{ join(etc_dir, scaler_y) }} \
+    SCALER_X={{ join(trained_models_dir, model, scaler_x) }} \
+    SCALER_Y={{ join(trained_models_dir, model, scaler_y) }} \
+    MODEL_PATH={{ join(trained_models_dir, model, model_file) }} \
     VAL_DATA_PATH={{ join(data_dir, syn_folder, val_data) }} \
     TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
-    {{ python_exec }} {{ etc_dir }}/{{ model }}.py
+    {{ python_exec }} {{ etc_dir }}/{{ model }}_model.py
 
 
 test:
