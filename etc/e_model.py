@@ -1,4 +1,3 @@
-import sys
 import os
 import numpy as np
 import pandas as pd
@@ -12,7 +11,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     mean_squared_error as mse_fn,
     mean_absolute_error as mae_fn,
-    mean_absolute_percentage_error as mape_fn,
 )
 from torchmetrics.functional import (
     r2_score,
