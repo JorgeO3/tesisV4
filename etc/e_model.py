@@ -1,9 +1,10 @@
 import os
+import torch
+import joblib
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import joblib
-import torch
+
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import StandardScaler
@@ -21,13 +22,16 @@ from torchmetrics.functional import (
 
 # Constants
 SEED = 42
-DEBUG = os.environ.get("DEBUG") == "1"
-EARLY_STOPPING = os.environ.get("STOPPING") == "1"
-SAVE_MODEL = os.environ.get("SAVE_MODEL") == "1"
 ACTIVE_RESPONSE_VARIABLES = ["%E"]
 RESPONSE_VARIABLES = ["TS", "WVP", "%E"]
+
+DEBUG = os.environ.get("DEBUG") == "1"
+SAVE_MODEL = os.environ.get("SAVE_MODEL") == "1"
+EARLY_STOPPING = os.environ.get("STOPPING") == "1"
+
 SCALER_X_PATH = os.environ.get("SCALER_X")
 SCALER_Y_PATH = os.environ.get("SCALER_Y")
+MODEL_PATH = os.environ.get("MODEL_PATH")
 VAL_DATA_PATH = os.environ.get("VAL_DATA_PATH")
 TRAIN_DATA_PATH = os.environ.get("TRAIN_DATA_PATH")
 
@@ -250,7 +254,7 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
 
     # Save model
     if SAVE_MODEL:
-        torch.save(model.state_dict(), "mlp_model.pt")
+        torch.save(model.state_dict(), MODEL_PATH)
 
 
 # Example parameters
