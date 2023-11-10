@@ -22,7 +22,7 @@ class MLP(nn.Module):
 
     def __init__(self):
         super().__init__()
-        self.layers = nn.Sequential(
+        self.network = nn.Sequential(
             nn.Linear(9, 20),
             nn.Tanh(),
             nn.Linear(20, 1),
@@ -32,7 +32,7 @@ class MLP(nn.Module):
         """
         Forward pass
         """
-        return self.layers(x)
+        return self.network(x)
 
 
 class WVPModel:
