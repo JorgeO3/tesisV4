@@ -1,14 +1,16 @@
 # Shell Configuration and Project Paths
 set shell := ["fish", "-c"]
-root_dir := "/home/jorge/Documents/projects/"
+root_dir := "/home/jorge/Documents/projects"
 project_dir := root_dir / "tesisV4"
 
 api_dir := project_dir / "api"
 etc_dir := project_dir / "etc"
 data_dir := project_dir / "data"
+venv_dir := project_dir / "venv"
 script_dir := project_dir / "scripts"
 results_dir := project_dir / "results"
 python_exec := project_dir / "venv/bin/python"
+uvicorn_exec := project_dir / "venv/bin/uvicorn"
 trained_models_dir := project_dir / "trained_models"
 e_model_dir := trained_models_dir / "e"
 ts_model_dir := trained_models_dir / "ts"
@@ -45,6 +47,11 @@ debug := "1"
 stopping := "0"
 n_trials := "500"
 save_model := "1"
+
+
+[private]
+venv:
+    source {{ venv_dir }}/bin/activate.fish
 
 # Clean Raw Data (Note: This is no longer necessary as the data is already clean)
 [private]
@@ -133,10 +140,6 @@ train-model *args:
     TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
     {{ python_exec }} {{ project_dir }}/main.py training {{ args }}
 
-predict-model:
-    @echo "Predicting model..."
-
-
 train-manual-model model:
     DEBUG={{ debug }} \
     STOPPING={{ stopping }} \
@@ -149,9 +152,9 @@ train-manual-model model:
     {{ python_exec }} {{ etc_dir }}/{{ model }}_model.py
 
 start-api:
-    @echo "Starting API..."
+    # @echo "Starting API..."
     SCALER_X={{ scaler_x }} \
     SCALER_Y={{ scaler_y }} \
     MODEL_FILE={{ model_file }} \
     MODELS_DIR={{ trained_models_dir }} \
-    {{ python_exec }} {{ api_dir }}/server.py
+    {{ uvicorn_exec }} api.server:app --reload

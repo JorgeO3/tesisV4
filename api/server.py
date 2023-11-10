@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from e_model import EModel
-from ts_model import TSModel
-from wvp_model import WVPModel
+from .e_model import EModel
+from .ts_model import TSModel
+from .wvp_model import WVPModel
 
 app = FastAPI()
 
