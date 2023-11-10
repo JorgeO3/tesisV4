@@ -117,7 +117,7 @@ optimize-model *args:
     SCALER_X={{ join(etc_dir, scaler_x) }} \
     SCALER_X={{ join(etc_dir, scaler_y) }} \
     STUDY_DIR={{ join(results_dir, syn_folder) }} \
-    val_data_PATH={{ join(data_dir, syn_folder, val_data) }} \
+    VAL_DATA_PATH={{ join(data_dir, syn_folder, val_data) }} \
     TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
     {{ python_exec }} {{ project_dir }}/main.py optimization {{ args }}
 
@@ -148,11 +148,10 @@ train-manual-model model:
     TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data) }} \
     {{ python_exec }} {{ etc_dir }}/{{ model }}_model.py
 
-
-test:
-    @echo "Splitting data into train and test..."
-    SYNTHETIC_DATA_PATH={{ join(data_dir, syn_folder, cleaned_synthetic) }} \
-    TRAIN_FILE_PATH={{ join(data_dir, syn_folder, train_data) }} \
-    TEST_FILE_PATH={{ join(data_dir, syn_folder, val_data) }} \
-    DATA_PATH={{ join(data_dir, cleaned_data) }} \
-    {{ python_exec }} {{ script_dir }}/mix_split.py
+start-api:
+    @echo "Starting API..."
+    SCALER_X={{ scaler_x }} \
+    SCALER_Y={{ scaler_y }} \
+    MODEL_FILE={{ model_file }} \
+    MODELS_DIR={{ trained_models_dir }} \
+    {{ python_exec }} {{ api_dir }}/server.py
