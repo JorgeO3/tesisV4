@@ -1,4 +1,5 @@
 import os
+import sys
 import torch
 import joblib
 import numpy as np
@@ -62,7 +63,7 @@ class MLP(nn.Module):
         super().__init__()
         self.network = nn.Sequential(
             nn.Linear(input_size, 24),
-            nn.Tanh(),
+            nn.Sigmoid(),
             nn.Linear(24, output_size),
         )
 
@@ -130,7 +131,7 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
             prediction = scaler_y.inverse_transform(prediction.cpu().numpy().reshape(1, -1)).flatten()
             target = scaler_y.inverse_transform(target.cpu().numpy().reshape(1, -1)).flatten()
             # fmt: on
-            np.square
+
             prediction = np.expm1(prediction).flatten()
             target = np.expm1(target).flatten()
 
@@ -146,6 +147,10 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
             )
             target_df = pd.DataFrame(target, columns=ACTIVE_RESPONSE_VARIABLES)
             pred_df = pd.DataFrame(prediction, columns=ACTIVE_RESPONSE_VARIABLES)
+
+            # save the mre and mae in a csv file by appending the values
+            with open("mre_mae_e.csv", "a") as f:
+                f.write(f"{target[0]},{prediction[0]},{mre},{mae}\n")
 
             # Reducir el número de decimales para una mejor visualización
             pd.options.display.float_format = "{:,.2f}".format
@@ -258,11 +263,11 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
 
 
 # Example parameters
-batch_size = 44
-num_epochs = 491
-train_size = 0.7563958920022334
-weight_decay = 1.280263510754911e-04
-learning_rate = 0.003175953014500801
+batch_size = 11
+num_epochs = 229
+train_size = 0.7681075112311813
+weight_decay = 2.5630843936694257e-05
+learning_rate = 0.004243753652173263
 
 if __name__ == "__main__":
     main(batch_size, num_epochs, train_size, weight_decay, learning_rate)

@@ -146,6 +146,10 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
             target_df = pd.DataFrame(target, columns=["WVP"])
             pred_df = pd.DataFrame(prediction, columns=["WVP"])
 
+            # save the mre and mae in a csv file by appending the values
+            with open("mre_mae_wvp.csv", "a") as f:
+                f.write(f"{target[0]},{prediction[0]},{mre},{mae}\n")
+
             # Reducir el número de decimales para una mejor visualización
             pd.options.display.float_format = "{:,.2f}".format
 
@@ -257,11 +261,17 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
 
 
 # Example parameters
-batch_size = 24
-num_epochs = 256
-train_size = 0.6783661371761389
-weight_decay = 0.00011544148510582894
-learning_rate = 0.0025468843743121163
+# batch_size = 24
+# num_epochs = 256
+# train_size = 0.6783661371761389
+# weight_decay = 0.00011544148510582894
+# learning_rate = 0.0025468843743121163
+
+batch_size = 62
+num_epochs = 287
+train_size = 0.6635009939260634
+weight_decay = 9.844325856384082e-05
+learning_rate = 0.008470692972985645
 
 if __name__ == "__main__":
     main(batch_size, num_epochs, train_size, weight_decay, learning_rate)

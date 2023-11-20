@@ -8,6 +8,7 @@ api_dir := project_dir / "api"
 etc_dir := project_dir / "etc"
 data_dir := project_dir / "data"
 venv_dir := project_dir / "venv"
+charts_dir := project_dir / "charts"
 script_dir := project_dir / "scripts"
 results_dir := project_dir / "results"
 trained_models_dir := project_dir / "trained_models"
@@ -44,9 +45,13 @@ syn_folder := syn_folder_name + syn_version
 
 # Training Variables
 debug := "1"
+debug_optim := "0"
 stopping := "0"
-n_trials := "500"
-save_model := "1"
+n_trials := "1000"
+save_model := "0"
+
+# Chart Variables
+charts_data_dir := charts_dir / "data"
 
 # Clean the raw data file to prepare it for analysis
 [private]
@@ -111,7 +116,7 @@ setup-model-training-data version:
 # Optimize the model's hyperparameters for better performance
 optimize-model *args:
     @echo "Optimizing model parameters..."
-    DEBUG={{ debug }} N_TRIALS={{ n_trials }} STOPPING={{ stopping }} SAVE_MODEL={{ save_model }} \
+    DEBUG={{ debug_optim }} N_TRIALS={{ n_trials }} STOPPING={{ stopping }} SAVE_MODEL={{ save_model }} \
     COMMANDS_FILE={{ join(etc_dir, commands_file) }} \
     SCALER_X_FILE={{ join(etc_dir, scaler_x_file) }} \
     SCALER_Y_FILE={{ join(etc_dir, scaler_y_file) }} \
@@ -144,8 +149,19 @@ train-model-with-custom-settings model:
 # Start the API server with live reloading enabled
 start-api:
     @echo "Starting the API with live reloading..."
-    SCALER_X_PATH={{ scaler_x_file }} \
-    SCALER_Y_PATH={{ scaler_y_file }} \
-    MODEL_FILE_PATH={{ model_file }} \
-    MODELS_DIR_PATH={{ trained_models_dir }} \
+    SCALER_X_FILE={{ scaler_x_file }} \
+    SCALER_Y_FILE={{ scaler_y_file }} \
+    MODEL_FILE={{ model_file }} \
+    MODELS_DIR={{ trained_models_dir }} \
     {{ uvicorn_exec }} api.server:app --reload
+
+start-deno:
+    @echo "Fetching data for inference..."
+    DATA_DIR={{ charts_data_dir }} \
+    deno run --allow-net --allow-read --allow-write --allow-env charts/main.ts
+
+# Generate the results for the analysis of the effects of number of neurons
+generate-neuron-results:
+    @echo "Generating results for the analysis of the effects of number of neurons..."
+    TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data_file) }} \
+    {{ python_exec }} {{ etc_dir }}/neuron_results.py

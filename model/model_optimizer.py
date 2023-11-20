@@ -78,6 +78,10 @@ class HyperparameterOptimizer(ModelExecutionStrategy):
         activation_funcs = [
             get_activation_function(
                 trial.suggest_categorical(f"activation_{i + 1}", ["ReLU", "Tanh", "Sigmoid", "Leaky"])
+                # trial.suggest_categorical(f"activation_{i + 1}", ["ReLU"])
+                # trial.suggest_categorical(f"activation_{i + 1}", ["Tanh"])
+                # trial.suggest_categorical(f"activation_{i + 1}", ["Sigmoid"])
+                # trial.suggest_categorical(f"activation_{i + 1}", ["Leaky"])
             )
             for i in range(hyperparams["num_layers"])
         ]
