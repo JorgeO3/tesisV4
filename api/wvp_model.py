@@ -5,14 +5,14 @@ import numpy as np
 import torch.nn as nn
 
 MODEL_TYPE = "wvp"
-SCALER_X = os.environ.get("SCALER_X")
-SCALER_Y = os.environ.get("SCALER_Y")
+SCALER_X_FILE = os.environ.get("SCALER_X_FILE")
+SCALER_Y_FILE = os.environ.get("SCALER_Y_FILE")
 MODEL_FILE = os.environ.get("MODEL_FILE")
 MODELS_DIR = os.environ.get("MODELS_DIR")
 
 MODEL_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, MODEL_FILE)
-SCALER_X_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, SCALER_X)
-SCALER_Y_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, SCALER_Y)
+SCALER_X_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, SCALER_X_FILE)
+SCALER_Y_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, SCALER_Y_FILE)
 
 
 class MLP(nn.Module):
@@ -69,4 +69,4 @@ class WVPModel:
             y_pred = self.model(input)
             y_pred = self.unnormalize_predictions(y_pred)
             y_pred = self.unlog_transform(y_pred)
-            return y_pred
+            return y_pred.tolist()

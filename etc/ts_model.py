@@ -61,9 +61,9 @@ class MLP(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(input_size, 22),
+            nn.Linear(input_size, 21),
             nn.ReLU(),
-            nn.Linear(22, output_size),
+            nn.Linear(21, output_size),
         )
 
     def forward(self, x):
@@ -130,7 +130,7 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
             prediction = scaler_y.inverse_transform(prediction.cpu().numpy().reshape(1, -1)).flatten()
             target = scaler_y.inverse_transform(target.cpu().numpy().reshape(1, -1)).flatten()
             # fmt: on
-            np.square
+
             prediction = np.expm1(prediction).flatten()
             target = np.expm1(target).flatten()
 
@@ -147,13 +147,17 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
             target_df = pd.DataFrame(target, columns=ACTIVE_RESPONSE_VARIABLES)
             pred_df = pd.DataFrame(prediction, columns=ACTIVE_RESPONSE_VARIABLES)
 
+            # save the mre and mae in a csv file by appending the values
+            with open("mre_mae_ts.csv", "a") as f:
+                f.write(f"{target[0]},{prediction[0]},{mre},{mae}\n")
+
             # Reducir el número de decimales para una mejor visualización
             pd.options.display.float_format = "{:,.2f}".format
 
-            print(f"MAE: {mae:.4f} - MRE: {mre:.4f} - MSE: {mse:.4f}")
             print("\nInputs:\n", input_df.to_string(index=False))
             print("\nTargets:\n", target_df.to_string(index=False))
             print("\nPredictions:\n", pred_df.to_string(index=False))
+            print(f"\nMAE: {mae:.4f} - MRE: {mre:.4f} - MSE: {mse:.4f}")
 
             mre_list.append(mre)
 
@@ -258,11 +262,11 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
 
 
 # Example parameters
-batch_size = 41
-num_epochs = 272
-train_size = 0.667622043568205
-weight_decay = 6.90850978031227e-05
-learning_rate = 0.02441733160883885
+batch_size = 68
+num_epochs = 227
+train_size = 0.6609677444187338
+weight_decay = 0.0003377668780981758
+learning_rate = 0.0033575076398968512
 
 if __name__ == "__main__":
     main(batch_size, num_epochs, train_size, weight_decay, learning_rate)

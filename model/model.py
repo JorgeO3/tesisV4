@@ -52,11 +52,11 @@ class NeuralNetworkModel:
         return train, test
 
     def run(self):
-        best_mape = float("inf")
+        mape = float("inf")
         patience = 10
         no_improve = 0
         r2 = None
-        best_mse = float("inf")
+        mse = float("inf")
         device = self.config.DEVICE
 
         self.core.to(device)
@@ -108,15 +108,15 @@ class NeuralNetworkModel:
                     print(f"MSE: {mse}, R2: {r2}")
                     print("========================================\n")
 
-                if mse < best_mse:
-                    best_mse = mse
-                    best_mape = mape
-                    no_improve = 0
-                else:
-                    no_improve += 1
+                # if mse < best_mse:
+                #     best_mse = mse
+                #     best_mape = mape
+                #     no_improve = 0
+                # else:
+                #     no_improve += 1
 
-                if no_improve >= patience and self.config.STOPPING:
-                    print("Early stopping!")
-                    break
+                # if no_improve >= patience and self.config.STOPPING:
+                #     print("Early stopping!")
+                #     break
 
-        return best_mse, best_mape, r2
+        return mse, mape, r2
