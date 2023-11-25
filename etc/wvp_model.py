@@ -218,15 +218,15 @@ def gen_math_model(params):
         print(f"z{i + 1} = tanh(y{i + 1})")
 
     if True:
-        w1 = layer2_weights[0].item()
-        w2 = layer2_weights[1].item()
-        w3 = layer2_weights[2].item()
-        w4 = layer2_weights[3].item()
-        w5 = layer2_weights[4].item()
-        w6 = layer2_weights[5].item()
-        w7 = layer2_weights[6].item()
-        w8 = layer2_weights[7].item()
-        w9 = layer2_weights[8].item()
+        w1 = layer2_weights[0][0].item()
+        w2 = layer2_weights[0][1].item()
+        w3 = layer2_weights[0][2].item()
+        w4 = layer2_weights[0][3].item()
+        w5 = layer2_weights[0][4].item()
+        w6 = layer2_weights[0][5].item()
+        w7 = layer2_weights[0][6].item()
+        w8 = layer2_weights[0][7].item()
+        w9 = layer2_weights[0][8].item()
         b = layer2_biases[0].item()
         print(
             f"WVP = {w1}z1 + {w2}z2 + {w3}z3 + {w4}z4 + {w5}z5 + {w6}z6 + {w7}z7 + {w8}z8 + {w9}z9 + {b}"
