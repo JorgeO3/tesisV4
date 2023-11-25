@@ -1,8 +1,19 @@
 import os
 import torch
+import random
 import joblib
+import sys
 import numpy as np
 import torch.nn as nn
+import pandas as pd
+
+
+# SEED = 42
+# random.seed(SEED)
+# np.random.seed(SEED)
+# torch.manual_seed(SEED)
+# torch.cuda.manual_seed(SEED)
+# torch.cuda.manual_seed_all(SEED)
 
 MODEL_TYPE = "wvp"
 SCALER_X_FILE = os.environ.get("SCALER_X_FILE")
@@ -14,6 +25,9 @@ MODEL_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, MODEL_FILE)
 SCALER_X_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, SCALER_X_FILE)
 SCALER_Y_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, SCALER_Y_FILE)
 
+input_vars = ["Chi", "Gel", "Gly", "Pec", "Sta", "Oil", "T(°C)", "%RH", "t(h)"]
+response_vars = ["WVP"]
+
 
 class MLP(nn.Module):
     """
@@ -23,9 +37,9 @@ class MLP(nn.Module):
     def __init__(self):
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(9, 20),
-            nn.Tanh(),
-            nn.Linear(20, 1),
+            nn.Linear(9, 22),
+            nn.ReLU(),
+            nn.Linear(22, 1),
         )
 
     def forward(self, x):
@@ -43,24 +57,19 @@ class WVPModel:
     def generate_tensor(self, data):
         return torch.tensor(data, dtype=torch.float32)
 
-    def log_transform(self, inputs):
-        return np.log1p(inputs)
-
     def unlog_transform(self, preds):
         return np.expm1(preds)
 
-    def normalize_inputs(self, inputs):
+    def normalize_inputs(self, x_train):
         scaler_X = joblib.load(SCALER_X_PATH)
-        return scaler_X.transform(inputs)
+        return scaler_X.transform(x_train)
 
-    def unnormalize_predictions(self, preds):
+    def unnormalize_predictions(self, y_train):
         scaler_y = joblib.load(SCALER_Y_PATH)
-        preds = preds.numpy().reshape(-1, 1)
-        return scaler_y.inverse_transform(preds)
+        return scaler_y.inverse_transform(y_train)
 
     def inference(self, X):
         input = np.array(X)
-        input = self.log_transform(input)
         input = self.normalize_inputs(input)
         input = self.generate_tensor(input)
 

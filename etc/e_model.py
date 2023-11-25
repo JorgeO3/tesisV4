@@ -1,5 +1,4 @@
 import os
-import sys
 import torch
 import joblib
 import numpy as np
@@ -7,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from torch import nn
+from scipy import stats
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -30,8 +30,8 @@ DEBUG = os.environ.get("DEBUG") == "1"
 SAVE_MODEL = os.environ.get("SAVE_MODEL") == "1"
 EARLY_STOPPING = os.environ.get("STOPPING") == "1"
 
-SCALER_X_PATH = os.environ.get("SCALER_X")
-SCALER_Y_PATH = os.environ.get("SCALER_Y")
+SCALER_X_PATH = os.environ.get("SCALER_X_PATH")
+SCALER_Y_PATH = os.environ.get("SCALER_Y_PATH")
 MODEL_PATH = os.environ.get("MODEL_PATH")
 VAL_DATA_PATH = os.environ.get("VAL_DATA_PATH")
 TRAIN_DATA_PATH = os.environ.get("TRAIN_DATA_PATH")
@@ -62,9 +62,9 @@ class MLP(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(input_size, 24),
-            nn.Sigmoid(),
-            nn.Linear(24, output_size),
+            nn.Linear(input_size, 21),
+            nn.Tanh(),
+            nn.Linear(21, output_size),
         )
 
     def forward(self, x):
@@ -114,6 +114,8 @@ def create_tensor(x):
 def make_predictions(model, features, targets, scaler_x, scaler_y):
     model.eval()
     mre_list = []
+    predictions = []
+    real_values = []
 
     with torch.no_grad():
         for i in range(len(features)):
@@ -134,6 +136,9 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
 
             prediction = np.expm1(prediction).flatten()
             target = np.expm1(target).flatten()
+
+            predictions.append(prediction[0])
+            real_values.append(target[0])
 
             # Calcular las métricas de evaluación con sklearn metrics
             mse = mse_fn(prediction, target)
@@ -163,10 +168,64 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
             mre_list.append(mre)
 
     # Calcular el error relativo promedio para todas las predicciones
-
     overall_mre = np.mean(mre_list)
-
     print(f"Error Relativo Promedio General: {overall_mre:.4f}")
+
+    # Print stats
+    print("predictions", predictions)
+    print("real_values", real_values)
+
+    t_stat, p_value = stats.ttest_rel(predictions, real_values)
+    print(f"t-statistic: {t_stat:.4f}")
+    print(f"p-value: {p_value:.4f}")
+    # weights = model.cpu().state_dict()["weights"]
+    # biases = model.cpu().state_dict()["
+
+    print("model_params", model.state_dict())
+    gen_math_model(model.state_dict())
+
+    # print("weights", weights)
+    # print("biases", biases)
+
+
+def gen_math_model(params):
+    layer1_weights = params["network.0.weight"]
+    layer1_biases = params["network.0.bias"]
+    layer2_weights = params["network.2.weight"]
+    layer2_biases = params["network.2.bias"]
+
+    for i, weights in enumerate(layer1_weights):
+        w1 = weights[0].item()
+        w2 = weights[1].item()
+        w3 = weights[2].item()
+        w4 = weights[3].item()
+        w5 = weights[4].item()
+        w6 = weights[5].item()
+        w7 = weights[6].item()
+        w8 = weights[7].item()
+        w9 = weights[8].item()
+        b = layer1_biases[i].item()
+        print(
+            f"y{i+1} = {w1}X1 + {w2}X2 + {w3}X3 + {w4}X4 + {w5}X5 + {w6}X6 + {w7}X7 + {w8}X8 + {w9}X9 + {b}"
+        )
+
+    for i in range(len(layer1_weights)):
+        print(f"z{i + 1} = tanh(y{i + 1})")
+
+    if True:
+        w1 = layer2_weights[0].item()
+        w2 = layer2_weights[1].item()
+        w3 = layer2_weights[2].item()
+        w4 = layer2_weights[3].item()
+        w5 = layer2_weights[4].item()
+        w6 = layer2_weights[5].item()
+        w7 = layer2_weights[6].item()
+        w8 = layer2_weights[7].item()
+        w9 = layer2_weights[8].item()
+        b = layer2_biases[0].item()
+        print(
+            f"WVP = {w1}z1 + {w2}z2 + {w3}z3 + {w4}z4 + {w5}z5 + {w6}z6 + {w7}z7 + {w8}z8 + {w9}z9 + {b}"
+        )
 
 
 def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
@@ -263,11 +322,17 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
 
 
 # Example parameters
-batch_size = 11
-num_epochs = 229
-train_size = 0.7681075112311813
-weight_decay = 2.5630843936694257e-05
-learning_rate = 0.004243753652173263
+batch_size = 68
+num_epochs = 434
+train_size = 0.7609523799274347
+weight_decay = 2.676298024761295e-05
+learning_rate = 0.0037397255334585015
+
+# batch_size = 18
+# num_epochs = 403
+# train_size = 0.7755065865156554
+# weight_decay = 0.0001316178336549633
+# learning_rate = 0.00183396437128479
 
 if __name__ == "__main__":
     main(batch_size, num_epochs, train_size, weight_decay, learning_rate)

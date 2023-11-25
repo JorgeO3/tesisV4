@@ -23,9 +23,9 @@ class MLP(nn.Module):
     def __init__(self):
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(9, 24),
+            nn.Linear(9, 21),
             nn.Tanh(),
-            nn.Linear(24, 1),
+            nn.Linear(21, 1),
         )
 
     def forward(self, x):
@@ -55,12 +55,10 @@ class EModel:
 
     def unnormalize_predictions(self, preds):
         scaler_y = joblib.load(SCALER_Y_PATH)
-        preds = preds.numpy().reshape(-1, 1)
         return scaler_y.inverse_transform(preds)
 
     def inference(self, X):
         input = np.array(X)
-        input = self.log_transform(input)
         input = self.normalize_inputs(input)
         input = self.generate_tensor(input)
 

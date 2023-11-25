@@ -6,8 +6,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from torch import nn
+from scipy import stats
 from torch.utils.data import Dataset, DataLoader
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     mean_squared_error as mse_fn,
@@ -29,8 +30,8 @@ DEBUG = os.environ.get("DEBUG") == "1"
 SAVE_MODEL = os.environ.get("SAVE_MODEL") == "1"
 EARLY_STOPPING = os.environ.get("STOPPING") == "1"
 
-SCALER_X_PATH = os.environ.get("SCALER_X")
-SCALER_Y_PATH = os.environ.get("SCALER_Y")
+SCALER_X_PATH = os.environ.get("SCALER_X_PATH")
+SCALER_Y_PATH = os.environ.get("SCALER_Y_PATH")
 MODEL_PATH = os.environ.get("MODEL_PATH")
 VAL_DATA_PATH = os.environ.get("VAL_DATA_PATH")
 TRAIN_DATA_PATH = os.environ.get("TRAIN_DATA_PATH")
@@ -61,9 +62,9 @@ class MLP(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(input_size, 21),
+            nn.Linear(input_size, 14),
             nn.ReLU(),
-            nn.Linear(21, output_size),
+            nn.Linear(14, output_size),
         )
 
     def forward(self, x):
@@ -110,9 +111,11 @@ def create_tensor(x):
     return torch.tensor(x, dtype=torch.float32).to(DEVICE)
 
 
-def make_predictions(model, features, targets, scaler_x, scaler_y):
+def make_predictions(model, features, targets, scaler_x, scaler_y, normalizer):
     model.eval()
     mre_list = []
+    predictions = []
+    real_values = []
 
     with torch.no_grad():
         for i in range(len(features)):
@@ -131,8 +134,14 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
             target = scaler_y.inverse_transform(target.cpu().numpy().reshape(1, -1)).flatten()
             # fmt: on
 
-            prediction = np.expm1(prediction).flatten()
-            target = np.expm1(target).flatten()
+            # prediction = np.expm1(prediction).flatten()
+            # target = np.expm1(target).flatten()
+
+            prediction = normalizer.inverse_transform(prediction.reshape(1, -1)).flatten()
+            target = normalizer.inverse_transform(target.reshape(1, -1)).flatten()
+
+            predictions.append(prediction[0])
+            real_values.append(target[0])
 
             # Calcular las métricas de evaluación con sklearn metrics
             mse = mse_fn(prediction, target)
@@ -162,15 +171,17 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
             mre_list.append(mre)
 
     # Calcular el error relativo promedio para todas las predicciones
-
     overall_mre = np.mean(mre_list)
-
     print(f"Error Relativo Promedio General: {overall_mre:.4f}")
+
+    t_stat, p_value = stats.ttest_rel(predictions, real_values)
+    print(f"t-statistic: {t_stat:.4f}")
+    print(f"p-value: {p_value:.4f}")
 
 
 def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
     # Load data
-    train_data = pd.read_csv(TRAIN_DATA_PATH)
+    train_data = pd.read_csv(TRAIN_DATA_PATH).sample(frac=1, random_state=SEED).reset_index(drop=True)
     val_data = pd.read_csv(VAL_DATA_PATH)
 
     # Train-test split
@@ -189,9 +200,14 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
     x_val, y_val = val_data.drop(RESPONSE_VARIABLES, axis=1), val_data[ACTIVE_RESPONSE_VARIABLES]
 
     # Logarithmic transformation
-    y_train = np.log1p(y_train)
-    y_test = np.log1p(y_test)
-    y_val = np.log1p(y_val)
+    # y_train = np.log1p(y_train)
+    # y_test = np.log1p(y_test)
+    # y_val = np.log1p(y_val)
+
+    normalizer = MinMaxScaler().fit(y_train)
+    y_train = normalizer.transform(y_train)
+    y_test = normalizer.transform(y_test)
+    y_val = normalizer.transform(y_val)
 
     # Scaling
     scaler_x = StandardScaler().fit(x_train)
@@ -254,7 +270,8 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
     plt.show()
 
     # Make predictions
-    _mre_list = make_predictions(model, x_val, y_val, scaler_x, scaler_y)
+    # _mre_list = make_predictions(model, x_val, y_val, scaler_x, scaler_y)
+    _mre_list = make_predictions(model, x_val, y_val, scaler_x, scaler_y, normalizer)
 
     # Save model
     if SAVE_MODEL:
@@ -262,11 +279,11 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
 
 
 # Example parameters
-batch_size = 68
-num_epochs = 227
-train_size = 0.6609677444187338
-weight_decay = 0.0003377668780981758
-learning_rate = 0.0033575076398968512
+batch_size = 74
+num_epochs = 130
+train_size = 0.7980258456632197
+weight_decay = 0.0006075412509561288
+learning_rate = 0.0065769949637002
 
 if __name__ == "__main__":
     main(batch_size, num_epochs, train_size, weight_decay, learning_rate)

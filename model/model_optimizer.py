@@ -90,9 +90,9 @@ class HyperparameterOptimizer(ModelExecutionStrategy):
         neural_network = Net(layer_sizes, activation_funcs)
         model_instance = NeuralNetworkModel(self.config, neural_network, hyperparams)
 
-        mse, mape, r2_score = model_instance.run()
+        mse, mape, r2 = model_instance.run()
         trial.set_user_attr("mse", mse.item())
         trial.set_user_attr("mape", mape.item())
-        trial.set_user_attr("r2", r2_score.item())
+        trial.set_user_attr("r2", r2.item())
 
         return mse

@@ -6,7 +6,7 @@ import torch.nn as nn
 
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, PowerTransformer, RobustScaler
 from sklearn.model_selection import train_test_split
 from torchmetrics.functional.regression.r2 import r2_score
 
@@ -26,7 +26,12 @@ class NeuralNetworkModel:
 
     def transform_data(self, data):
         resp_vars = self.config.IND_RESPONSE_VARS
-        data[:, resp_vars] = np.log1p(data[:, resp_vars])
+        # data[:, resp_vars] = MinMaxScaler().fit_transform(data[:, resp_vars])
+        # data[:, resp_vars] = PowerTransformer("yeo-johnson", standardize=False).fit_transform(
+        #     data[:, resp_vars]
+        # )
+        # data[:, resp_vars] = np.log1p(data[:, resp_vars])
+        # data[:, resp_vars] = RobustScaler().fit_transform(data[:, resp_vars])
         return data
 
     def gen_data(self, data):
