@@ -1,15 +1,15 @@
 import { join } from "https://deno.land/std@0.206.0/path/join.ts";
 
 const defaultEdibleFilm = [
-  0.922,
+  0.499,
   0.0,
-  0.194,
+  0.3,
   0.0,
-  0.922,
   0.0,
-  60,
-  60.0,
-  18,
+  0.0,
+  40,
+  54,
+  24,
 ];
 
 if (import.meta.main) {
@@ -78,14 +78,16 @@ function makeRequestToModel(
 
 function generateData(): number[][] {
   const data: number[][] = [];
+  // this value is important because it determines the base
+  //value that the algorithm will use to perform the increments.
+  const base = [1, 1.99, 0.89, 0.15, 0.69, 2.28, 31, 37.5, 169.25];
 
   for (let i = 0; i < defaultEdibleFilm.length; i++) {
-    for (let j = 0; j < 10; j++) {
+    for (let j = 1; j < 11; j++) {
       const edibleFilm = [...defaultEdibleFilm];
-      edibleFilm[i] += j + 1;
+      edibleFilm[i] += base[i] * (j * 0.05);
       data.push(edibleFilm);
     }
   }
-
   return data;
 }

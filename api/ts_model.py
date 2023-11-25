@@ -14,6 +14,9 @@ MODEL_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, MODEL_FILE)
 SCALER_X_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, SCALER_X_FILE)
 SCALER_Y_PATH = os.path.join(MODELS_DIR, MODEL_TYPE, SCALER_Y_FILE)
 
+input_vars = ["Chi", "Gel", "Gly", "Pec", "Sta", "Oil", "T(°C)", "%RH", "t(h)"]
+response_vars = ["TS"]
+
 
 class MLP(nn.Module):
     """
@@ -23,9 +26,9 @@ class MLP(nn.Module):
     def __init__(self):
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(9, 22),
-            nn.Tanh(),
-            nn.Linear(22, 1),
+            nn.Linear(9, 13),
+            nn.LeakyReLU(),
+            nn.Linear(13, 1),
         )
 
     def forward(self, x):
@@ -43,9 +46,6 @@ class TSModel:
     def generate_tensor(self, data):
         return torch.tensor(data, dtype=torch.float32)
 
-    def log_transform(self, inputs):
-        return np.log1p(inputs)
-
     def unlog_transform(self, preds):
         return np.expm1(preds)
 
@@ -55,12 +55,10 @@ class TSModel:
 
     def unnormalize_predictions(self, preds):
         scaler_y = joblib.load(SCALER_Y_PATH)
-        preds = preds.numpy().reshape(-1, 1)
         return scaler_y.inverse_transform(preds)
 
     def inference(self, X):
         input = np.array(X)
-        input = self.log_transform(input)
         input = self.normalize_inputs(input)
         input = self.generate_tensor(input)
 

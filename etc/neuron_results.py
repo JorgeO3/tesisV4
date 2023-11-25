@@ -12,12 +12,12 @@ from torchmetrics.functional.regression.r2 import r2_score
 
 # Constants
 SEED = 42
-ACTIVE_RESPONSE_VARIABLES = ["%E"]
 RESPONSE_VARIABLES = ["TS", "WVP", "%E"]
 
 # Device configuration
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+RESP_VAR = os.environ.get("RESP_VAR")
 VAL_DATA_PATH = os.environ.get("VAL_DATA_PATH")
 TRAIN_DATA_PATH = os.environ.get("TRAIN_DATA_PATH")
 
@@ -81,12 +81,12 @@ def train_by_neurons(
     # Feature-target split
     x_train, y_train = (
         train_data.drop(RESPONSE_VARIABLES, axis=1),
-        train_data[ACTIVE_RESPONSE_VARIABLES],
+        train_data[[RESP_VAR]],
     )
 
     x_test, y_test = (
         test_data.drop(RESPONSE_VARIABLES, axis=1),
-        test_data[ACTIVE_RESPONSE_VARIABLES],
+        test_data[[RESP_VAR]],
     )
 
     # Logarithmic transformation
@@ -136,55 +136,59 @@ def train_by_neurons(
         with torch.no_grad():
             preds = model(x_test)
             mse = loss_fn(preds, y_test).item()
-            r2 = r2_score(preds, y_test)
+            r2 = r2_score(preds, y_test).item()
 
-    with open(f"{ACTIVE_RESPONSE_VARIABLES[0]}_results.csv", "a") as f:
+    with open(f"{RESP_VAR}_results.csv", "a") as f:
         writer = csv.writer(f)
-        writer.writerow([ACTIVE_RESPONSE_VARIABLES[0], a_function, n_neurons, mse, r2])
+        writer.writerow([RESP_VAR, a_function, n_neurons, mse, r2])
 
-    print(
-        f"Var: {ACTIVE_RESPONSE_VARIABLES[0]}, func: {a_function}, Neurons: {n_neurons}, MSE: {mse:.4}, R2: {r2:.4}"
-    )
+    print(f"Var: {RESP_VAR}, func: {a_function}, Neurons: {n_neurons}, MSE: {mse:.4}, R2: {r2:.4}")
+
+
+def model_parameters():
+    return {
+        "TS": {
+            "batch_size": 68,
+            "num_epochs": 227,
+            "train_size": 0.6609677444187338,
+            "weight_decay": 0.0003377668780981758,
+            "learning_rate": 0.0033575076398968512,
+            "functions": ["tanh", "relu", "leaky", "sigmoid"],
+        },
+        "WVP": {
+            "batch_size": 98,
+            "num_epochs": 412,
+            "train_size": 0.6293516366088306,
+            "weight_decay": 0.001061727517662332,
+            "learning_rate": 0.00260562099766106,
+            "functions": ["tanh", "relu", "leaky", "sigmoid"],
+        },
+        "%E": {
+            "batch_size": 68,
+            "num_epochs": 434,
+            "train_size": 0.7609523799274347,
+            "weight_decay": 2.676298024761295e-05,
+            "learning_rate": 0.0037397255334585015,
+            "functions": ["tanh", "relu", "leaky", "sigmoid"],
+        },
+    }[RESP_VAR]
 
 
 def main():
-    # Parameters
-    # TS
-    # batch_size = 68
-    # num_epochs = 227
-    # train_size = 0.6609677444187338
-    # weight_decay = 0.0003377668780981758
-    # learning_rate = 0.0033575076398968512
-    # functions = ["tanh", "relu", "leaky", "sigmoid"]
+    params = model_parameters()
 
-    # WVP
-    # batch_size = 62
-    # num_epochs = 287
-    # train_size = 0.6635009939260634
-    # weight_decay = 9.844325856384082e-05
-    # learning_rate = 0.008470692972985645
-
-    # %E
-    batch_size = 11
-    num_epochs = 274
-    train_size = 0.7681075112311813
-    weight_decay = 2.5630843936694257e-05
-    learning_rate = 0.004243753652173263
-
-    functions = ["tanh", "relu", "leaky", "sigmoid"]
-
-    for function in functions:
+    for function in params["functions"]:
         for n_neurons in range(1, 25):
             # set global seed
             global_seed()
             train_by_neurons(
                 n_neurons=n_neurons,
                 a_function=function,
-                batch_size=batch_size,
-                num_epochs=num_epochs,
-                train_size=train_size,
-                weight_decay=weight_decay,
-                learning_rate=learning_rate,
+                batch_size=params["batch_size"],
+                num_epochs=params["num_epochs"],
+                train_size=params["train_size"],
+                weight_decay=params["weight_decay"],
+                learning_rate=params["learning_rate"],
             )
 
 

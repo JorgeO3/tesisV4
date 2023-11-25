@@ -47,7 +47,7 @@ syn_folder := syn_folder_name + syn_version
 debug := "1"
 debug_optim := "0"
 stopping := "0"
-n_trials := "1000"
+n_trials := "500"
 save_model := "0"
 
 # Chart Variables
@@ -142,8 +142,8 @@ train-model-with-custom-settings model:
     SCALER_X_PATH={{ join(trained_models_dir, model, scaler_x_file) }} \
     SCALER_Y_PATH={{ join(trained_models_dir, model, scaler_y_file) }} \
     MODEL_PATH={{ join(trained_models_dir, model, model_file) }} \
-    VAL_DATA_PATH={{ join(data_dir, syn_folder, val_data_file) }} \
-    TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data_file) }} \
+    VAL_DATA_PATH={{ join(data_dir, if model == "wvp" { etc_dir } else { syn_folder }, val_data_file) }} \
+    TRAIN_DATA_PATH={{ join(data_dir, if model == "wvp" { etc_dir } else { syn_folder }, train_data_file) }} \
     {{ python_exec }} {{ etc_dir }}/{{ model }}_model.py
 
 # Start the API server with live reloading enabled
@@ -161,7 +161,8 @@ start-deno:
     deno run --allow-net --allow-read --allow-write --allow-env charts/main.ts
 
 # Generate the results for the analysis of the effects of number of neurons
-generate-neuron-results:
+generate-neuron-results var:
     @echo "Generating results for the analysis of the effects of number of neurons..."
-    TRAIN_DATA_PATH={{ join(data_dir, syn_folder, train_data_file) }} \
+    RESP_VAR={{ if var == "wvp" { "WVP" } else { "%E" } }} \
+    TRAIN_DATA_PATH={{ join(data_dir, if var == "wvp" { etc_dir } else { syn_folder }, train_data_file) }} \
     {{ python_exec }} {{ etc_dir }}/neuron_results.py
