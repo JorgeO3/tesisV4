@@ -190,6 +190,7 @@ def make_predictions(model, features, targets, scaler_x, scaler_y):
     print(f"p-value: {p_value:.4f}")
 
     # Print math model representation
+    print("model_params", model.state_dict())
     gen_math_model(model.state_dict())
 
 
@@ -211,11 +212,11 @@ def gen_math_model(params):
         w9 = weights[8].item()
         b = layer1_biases[i].item()
         print(
-            f"y{i+1} = {w1}X1 + {w2}X2 + {w3}X3 + {w4}X4 + {w5}X5 + {w6}X6 + {w7}X7 + {w8}X8 + {w9}X9 + {b}"
+            f"\ny{i+1} = {w1}X1 + {w2}X2 + {w3}X3 + {w4}X4 + {w5}X5 + {w6}X6 + {w7}X7 + {w8}X8 + {w9}X9 + {b}"
         )
 
     for i in range(len(layer1_weights)):
-        print(f"z{i + 1} = tanh(y{i + 1})")
+        print(f"\nz{i + 1} = tanh(y{i + 1})")
 
     if True:
         w1 = layer2_weights[0][0].item()
@@ -229,7 +230,7 @@ def gen_math_model(params):
         w9 = layer2_weights[0][8].item()
         b = layer2_biases[0].item()
         print(
-            f"WVP = {w1}z1 + {w2}z2 + {w3}z3 + {w4}z4 + {w5}z5 + {w6}z6 + {w7}z7 + {w8}z8 + {w9}z9 + {b}"
+            f"\nWVP = {w1}z1 + {w2}z2 + {w3}z3 + {w4}z4 + {w5}z5 + {w6}z6 + {w7}z7 + {w8}z8 + {w9}z9 + {b}"
         )
 
 
