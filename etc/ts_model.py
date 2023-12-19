@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from torch import nn
 from scipy import stats
 from torch.utils.data import Dataset, DataLoader
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     mean_squared_error as mse_fn,
@@ -62,9 +62,9 @@ class MLP(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(input_size, 14),
-            nn.ReLU(),
-            nn.Linear(14, output_size),
+            nn.Linear(input_size, 13),
+            nn.LeakyReLU(),
+            nn.Linear(13, output_size),
         )
 
     def forward(self, x):
@@ -75,9 +75,9 @@ def compute_mre(y_pred, y_true):
     return np.mean(np.abs((y_true - y_pred) / y_true))
 
 
-def loss_fn(output, target):
-    # MAPE loss
-    return torch.mean(torch.abs((target - output) / target))
+# def loss_fn(output, target):
+#     # MAPE loss
+#     return torch.mean(torch.abs((target - output) / target))
 
 
 def mre_fn(output, target):
@@ -111,7 +111,7 @@ def create_tensor(x):
     return torch.tensor(x, dtype=torch.float32).to(DEVICE)
 
 
-def make_predictions(model, features, targets, scaler_x, scaler_y, normalizer):
+def make_predictions(model, features, targets, scaler_x, scaler_y):
     model.eval()
     mre_list = []
     predictions = []
@@ -136,9 +136,6 @@ def make_predictions(model, features, targets, scaler_x, scaler_y, normalizer):
 
             # prediction = np.expm1(prediction).flatten()
             # target = np.expm1(target).flatten()
-
-            prediction = normalizer.inverse_transform(prediction.reshape(1, -1)).flatten()
-            target = normalizer.inverse_transform(target.reshape(1, -1)).flatten()
 
             predictions.append(prediction[0])
             real_values.append(target[0])
@@ -181,7 +178,7 @@ def make_predictions(model, features, targets, scaler_x, scaler_y, normalizer):
 
 def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
     # Load data
-    train_data = pd.read_csv(TRAIN_DATA_PATH).sample(frac=1, random_state=SEED).reset_index(drop=True)
+    train_data = pd.read_csv(TRAIN_DATA_PATH)
     val_data = pd.read_csv(VAL_DATA_PATH)
 
     # Train-test split
@@ -203,11 +200,6 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
     # y_train = np.log1p(y_train)
     # y_test = np.log1p(y_test)
     # y_val = np.log1p(y_val)
-
-    normalizer = MinMaxScaler().fit(y_train)
-    y_train = normalizer.transform(y_train)
-    y_test = normalizer.transform(y_test)
-    y_val = normalizer.transform(y_val)
 
     # Scaling
     scaler_x = StandardScaler().fit(x_train)
@@ -271,7 +263,7 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
 
     # Make predictions
     # _mre_list = make_predictions(model, x_val, y_val, scaler_x, scaler_y)
-    _mre_list = make_predictions(model, x_val, y_val, scaler_x, scaler_y, normalizer)
+    _mre_list = make_predictions(model, x_val, y_val, scaler_x, scaler_y)
 
     # Save model
     if SAVE_MODEL:
@@ -279,11 +271,11 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
 
 
 # Example parameters
-batch_size = 74
-num_epochs = 130
-train_size = 0.7980258456632197
-weight_decay = 0.0006075412509561288
-learning_rate = 0.0065769949637002
+batch_size = 12
+num_epochs = 117
+train_size = 0.7993236923378196
+weight_decay = 3.721912528418986e-05
+learning_rate = 0.005912991279847401
 
 if __name__ == "__main__":
     main(batch_size, num_epochs, train_size, weight_decay, learning_rate)

@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from torch import nn
 from scipy import stats
 from torch.utils.data import Dataset, DataLoader
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     mean_squared_error as mse_fn,
@@ -201,37 +201,27 @@ def gen_math_model(params):
     layer2_biases = params["network.2.bias"]
 
     for i, weights in enumerate(layer1_weights):
-        w1 = weights[0].item()
-        w2 = weights[1].item()
-        w3 = weights[2].item()
-        w4 = weights[3].item()
-        w5 = weights[4].item()
-        w6 = weights[5].item()
-        w7 = weights[6].item()
-        w8 = weights[7].item()
-        w9 = weights[8].item()
-        b = layer1_biases[i].item()
-        print(
-            f"\ny{i+1} = {w1}X1 + {w2}X2 + {w3}X3 + {w4}X4 + {w5}X5 + {w6}X6 + {w7}X7 + {w8}X8 + {w9}X9 + {b}"
-        )
+        print(f"\n\ny{i+1} = ", end="")
 
-    for i in range(len(layer1_weights)):
-        print(f"\nz{i + 1} = tanh(y{i + 1})")
+        for j, weight in enumerate(weights):
+            weight = weight.item()
+            b = layer1_biases[i].item()
+
+            if j == len(weights) - 1:
+                print(f"{weight}X{j+1} + {b}", end="")
+            else:
+                print(f"{weight}X{j+1} + ", end="")
 
     if True:
-        w1 = layer2_weights[0][0].item()
-        w2 = layer2_weights[0][1].item()
-        w3 = layer2_weights[0][2].item()
-        w4 = layer2_weights[0][3].item()
-        w5 = layer2_weights[0][4].item()
-        w6 = layer2_weights[0][5].item()
-        w7 = layer2_weights[0][6].item()
-        w8 = layer2_weights[0][7].item()
-        w9 = layer2_weights[0][8].item()
-        b = layer2_biases[0].item()
-        print(
-            f"\nWVP = {w1}z1 + {w2}z2 + {w3}z3 + {w4}z4 + {w5}z5 + {w6}z6 + {w7}z7 + {w8}z8 + {w9}z9 + {b}"
-        )
+        print("\nWVP = ", end="")
+        for i, weight in enumerate(layer2_weights[0]):
+            item = weight.item()
+
+            if i == len(layer2_weights[0]) - 1:
+                b = layer2_biases[0].item()
+                print(f"({item})(ReLU y{i + 1}) + ({b})", end="")
+            else:
+                print(f"({item})(ReLU y{i + 1}) + ", end="")
 
 
 def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
@@ -271,6 +261,8 @@ def main(batch_size, num_epochs, train_size, weight_decay, learning_rate):
     # Scaling
     scaler_x = StandardScaler().fit(x_train)
     scaler_y = StandardScaler().fit(y_train)
+
+    print(scaler_x.scale_)
 
     x_train = scaler_x.transform(x_train)
     y_train = scaler_y.transform(y_train)
