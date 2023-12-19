@@ -136,14 +136,14 @@ train-model *args:
     {{ python_exec }} {{ project_dir }}/main.py training {{ args }}
 
 # Train the model with custom settings specified by the model's configuration
-train-model-with-custom-settings model:
+train-model-with-custom-settings model path:
     @echo "Manually training model: {{ model }}..."
     DEBUG={{ debug }} STOPPING={{ stopping }} SAVE_MODEL={{ save_model }} \
     SCALER_X_PATH={{ join(trained_models_dir, model, scaler_x_file) }} \
     SCALER_Y_PATH={{ join(trained_models_dir, model, scaler_y_file) }} \
     MODEL_PATH={{ join(trained_models_dir, model, model_file) }} \
-    VAL_DATA_PATH={{ join(data_dir, if model == "wvp" { etc_dir } else { syn_folder }, val_data_file) }} \
-    TRAIN_DATA_PATH={{ join(data_dir, if model == "wvp" { etc_dir } else { syn_folder }, train_data_file) }} \
+    VAL_DATA_PATH={{ join(project_dir, path, val_data_file) }} \
+    TRAIN_DATA_PATH={{ join(project_dir, path, train_data_file) }} \
     {{ python_exec }} {{ etc_dir }}/{{ model }}_model.py
 
 # Start the API server with live reloading enabled
