@@ -1,5 +1,3 @@
-import sys
-
 import joblib
 import numpy as np
 import torch as th
@@ -8,7 +6,7 @@ import torch.nn as nn
 
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, PowerTransformer, RobustScaler
 from sklearn.model_selection import train_test_split
 from torchmetrics.functional.regression.r2 import r2_score
 
@@ -16,12 +14,7 @@ from .model_config import ModelConfig
 from .mlp_dataset import ModelDataset
 
 
-def compute_mre(preds, target, epsilon=1e-10):
-    mre = th.mean(th.abs(preds - target) / (th.abs(target) + epsilon)) * 100
-    return mre.item()
-
-
-class Model:
+class NeuralNetworkModel:
     def __init__(self, config: ModelConfig, core, params) -> None:
         self.config = config
         self.core = core
@@ -29,12 +22,16 @@ class Model:
 
     # loss function and optimizer
     def loss_fn(self, output, target):
-        # MAPE loss
         return th.mean(th.abs((target - output) / target))
 
     def transform_data(self, data):
         resp_vars = self.config.IND_RESPONSE_VARS
-        data[:, resp_vars] = np.log1p(data[:, resp_vars])
+        # data[:, resp_vars] = MinMaxScaler().fit_transform(data[:, resp_vars])
+        # data[:, resp_vars] = PowerTransformer("yeo-johnson", standardize=False).fit_transform(
+        #     data[:, resp_vars]
+        # )
+        # data[:, resp_vars] = np.log1p(data[:, resp_vars])
+        # data[:, resp_vars] = RobustScaler().fit_transform(data[:, resp_vars])
         return data
 
     def gen_data(self, data):
@@ -60,11 +57,11 @@ class Model:
         return train, test
 
     def run(self):
-        mre_list = []
+        mape = float("inf")
         patience = 10
         no_improve = 0
         r2 = None
-        best_mse = float("inf")
+        mse = float("inf")
         device = self.config.DEVICE
 
         self.core.to(device)
@@ -76,7 +73,7 @@ class Model:
         )
 
         data = pd.read_csv(self.config.TRAIN_DATA_PATH)
-        # data = self.transform_data(data.values)
+        data = self.transform_data(data.values)
 
         train, test = train_test_split(data, train_size=self.params["train_size"], random_state=42)
         train, test = self.scale_data(train, test)
@@ -89,7 +86,7 @@ class Model:
         y_test = th.tensor(y_test, dtype=th.float32).to(device)
 
         th.manual_seed(self.config.SEED)
-        for i in range(self.params["num_epochs"]):
+        for i in range(self.params["epochs"]):
             self.core.train()
 
             for x, y in train_loader:
@@ -108,24 +105,23 @@ class Model:
                 y_pred = self.core(x_test)
 
                 mse = loss_fn(y_pred, y_test)
-                mre = compute_mre(y_pred, y_test)
+                mape = self.loss_fn(y_pred, y_test)
                 r2 = r2_score(y_pred, y_test)
-                mre_list.append(mre)
 
                 if self.config.DEBUG:
                     print(f"=========== MSE - EPOCH: {i} ==========")
                     print(f"MSE: {mse}, R2: {r2}")
                     print("========================================\n")
 
-                if mse < best_mse:
-                    best_mse = mse
-                    no_improve = 0
-                else:
-                    no_improve += 1
+                # if mse < best_mse:
+                #     best_mse = mse
+                #     best_mape = mape
+                #     no_improve = 0
+                # else:
+                #     no_improve += 1
 
-                if no_improve >= patience and self.config.STOPPING:
-                    print("Early stopping!")
-                    break
+                # if no_improve >= patience and self.config.STOPPING:
+                #     print("Early stopping!")
+                #     break
 
-        avg_mre = sum(mre_list) / len(mre_list)
-        return best_mse, avg_mre, r2
+        return mse, mape, r2
