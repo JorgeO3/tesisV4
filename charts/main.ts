@@ -1,12 +1,11 @@
 import { makeInference } from "./model_inference.ts";
 import { makeAnalysis } from "./bibliometric_analysis.ts";
-
-const ff = {
-  inference: false,
-  bibliometricAnalysis: true,
-};
+import { Config } from "./envs.ts";
 
 if (import.meta.main) {
-  ff.inference && makeInference();
-  ff.bibliometricAnalysis && makeAnalysis();
+  const config = new Config();
+  const { bibliometricAnalysis, inference } = config.envs;
+
+  inference && makeInference();
+  bibliometricAnalysis && makeAnalysis();
 }

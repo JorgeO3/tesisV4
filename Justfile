@@ -50,8 +50,10 @@ stopping := "0"
 n_trials := "500"
 save_model := "0"
 
-# Chart Variables
+# Deno Variables
 charts_data_dir := charts_dir / "data"
+inference := "0"
+bibliom_analysis := "0"
 
 # Clean the raw data file to prepare it for analysis
 [private]
@@ -155,10 +157,16 @@ start-api:
     MODELS_DIR={{ trained_models_dir }} \
     {{ uvicorn_exec }} api.server:app --reload
 
-start-deno:
+deno-inference:
     @echo "Fetching data for inference..."
     DATA_DIR={{ charts_data_dir }} \
     deno run --allow-net --allow-read --allow-write --allow-env charts/main.ts
+
+deno-analysis:
+    @echo "Starting bibliometric analysis..."
+    INFERENCE={{ inference }}
+    BIBLIOMETRIC_ANALYSIS={{ bibliom_analysis }}
+    deno run --allow-read --allow-write --allow-env charts/main.ts
 
 # Generate the results for the analysis of the effects of number of neurons
 generate-neuron-results var:
