@@ -52,8 +52,9 @@ save_model := "0"
 
 # Deno Variables
 charts_data_dir := charts_dir / "data"
-inference := "0"
-bibliom_analysis := "0"
+inference := "1"
+bibliom_analysis := "1"
+autors_file := "authors.csv"
 
 # Clean the raw data file to prepare it for analysis
 [private]
@@ -159,13 +160,14 @@ start-api:
 
 deno-inference:
     @echo "Fetching data for inference..."
+    INFERENCE={{ inference }} \
     DATA_DIR={{ charts_data_dir }} \
     deno run --allow-net --allow-read --allow-write --allow-env charts/main.ts
 
 deno-analysis:
     @echo "Starting bibliometric analysis..."
-    INFERENCE={{ inference }}
-    BIBLIOMETRIC_ANALYSIS={{ bibliom_analysis }}
+    BIBLIOMETRIC_ANALYSIS={{ bibliom_analysis }} \
+    PATH_FILE_AUTHORS={{ join(charts_dir, autors_file) }} \
     deno run --allow-read --allow-write --allow-env charts/main.ts
 
 # Generate the results for the analysis of the effects of number of neurons
