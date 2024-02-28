@@ -1,4 +1,4 @@
-const COUNTRIES = [
+const COUNTRIES: Set<string> = new Set([
   "China",
   "Brazil",
   "Indonesia",
@@ -80,6 +80,6 @@ const COUNTRIES = [
   "Switzerland",
   "Ukraine",
   "Undefined",
-];
+]);
 
 export { COUNTRIES };
