@@ -1,6 +1,38 @@
+// import { parse } from "https://deno.land/std@0.217.0/csv/mod.ts";
+// import { Config } from "./analyses_config.ts";
+
+// interface Author {
+//   firstName: string;
+//   lastName: string;
+// }
+
+// interface Document {
+//   authors: Author[];
+//   title: string;
+//   year: number;
+//   citedBy: number;
+//   countries: string[];
+// }
+
+// class BibiometricAnalysis {
+//   docs: Document[];
+//   authors: Map<string, Author>;
+
+//   constructor() {
+//     this.docs = this.readAndParseAuthorsFile();
+//     this.authors = this.searchAndSetAuthors();
+//   }
+
+//   readAndParseAuthorsFile(): Document[] {}
+//   searchAndSetAuthors(): Map<string, Author> {}
+// }
+
+// export { BibiometricAnalysis };
+
 import { parse } from "https://deno.land/std@0.217.0/csv/mod.ts";
 
 import { Config } from "./analyses_config.ts";
+import { stringify } from "https://deno.land/std@0.217.0/csv/stringify.ts";
 // import { COUNTRIES } from "./countries.ts";
 
 interface Author {
@@ -52,7 +84,8 @@ const parseCountries = (affiliations: string): string[] => {
   );
 };
 class BibiometricAnalysis {
-  docs: Documents;
+  private basePath = "./charts";
+  private docs: Documents;
 
   constructor(private config: Config) {
     this.docs = this.readAndParseFile();
@@ -89,19 +122,12 @@ class BibiometricAnalysis {
   }
 
   public start(): void {
-    // =============== Number of documents by year ===============
     this.numOfDocumentsByYear();
-
-    // =============== Number of documents by Author ===============
     const authors = this.numOfDocumentsByAuthor();
-
-    // =============== Number of cites by country ===============
     this.numOfCitesByCountrie();
-
-    // =============== Number of docs by country ===============
     this.numOfDocsByCountry();
-
     this.indexH(authors);
+    this.authorCollaborationNetwork(authors);
   }
 
   private numOfDocumentsByYear(): DocsByYear[] {
@@ -120,6 +146,15 @@ class BibiometricAnalysis {
     }
 
     orderedData.sort((a, b) => b.year - a.year);
+
+    let csvFile = "Año, Numero de documentos\n";
+    for (const { year, numOfDocs } of orderedData) {
+      csvFile += `${year}, ${numOfDocs}\n`;
+    }
+
+    Deno.writeTextFileSync(`${this.basePath}/documents_by_year.csv`, csvFile, {
+      append: false,
+    });
 
     return orderedData;
   }
@@ -142,6 +177,20 @@ class BibiometricAnalysis {
       orderedDocsByAuthor.push({ id, numOfDocs });
     }
     orderedDocsByAuthor.sort((a, b) => b.numOfDocs - a.numOfDocs);
+
+    let csvFile = "ID Autor, Número de documentos\n";
+
+    for (const { id, numOfDocs } of orderedDocsByAuthor) {
+      csvFile += `${id}, ${numOfDocs}\n`;
+    }
+
+    Deno.writeTextFileSync(
+      `${this.basePath}/documents_by_author.csv`,
+      csvFile,
+      {
+        append: false,
+      },
+    );
 
     return orderedDocsByAuthor;
   }
@@ -168,7 +217,16 @@ class BibiometricAnalysis {
     }
     orderedCitesByCountry.sort((a, b) => b.cites - a.cites);
 
-    // console.log({ orderedCitesByCountry });
+    let csvFile = "Pais, Citas\n";
+
+    for (const { country, cites } of orderedCitesByCountry) {
+      csvFile += `${country}, ${cites}\n`;
+    }
+
+    Deno.writeTextFileSync(`${this.basePath}/cites_by_country.csv`, csvFile, {
+      append: false,
+    });
+
     return orderedCitesByCountry;
   }
 
@@ -196,6 +254,7 @@ class BibiometricAnalysis {
     const { data } = this.docs;
     const mostImportantAuthors = docsByAuthor.slice(0, 10);
     const citesByAuthor = new Map<string, number>();
+    const path = `${this.basePath}/bibliometric_indicators.csv`;
 
     // the number of cites by author
     for (const { authors, citedBy } of data) {
@@ -211,9 +270,127 @@ class BibiometricAnalysis {
       sortedCitesByAuthor.push({ id, cites });
     }
     sortedCitesByAuthor.sort((a, b) => b.cites - a.cites);
+
+    const firstPublications = new Map<string, number>();
+
+    // fist year of publication
+    for (const { authors, year } of data) {
+      const authorsSet = authors.reduce((acc, { id }) => {
+        return acc.add(id);
+      }, new Set<string>());
+
+      for (const { id } of mostImportantAuthors) {
+        const parsedId = id.toString();
+        const currentFirstPublication = firstPublications.get(parsedId) || 2024;
+
+        if (authorsSet.has(parsedId) && year < currentFirstPublication) {
+          firstPublications.set(parsedId, year);
+        }
+      }
+    }
+
+    const sortedArrFP = [];
+
+    for (const [authorId, year] of firstPublications) {
+      sortedArrFP.push({ authorId, year });
+    }
+
+    let csvFile =
+      "ID, Autor, Índice H, Total de Citas, Total de artículos, Primer año\n";
+
+    for (let i = 0; i < 10; i++) {
+      const authorId = sortedArrFP[i].authorId;
+      const year = sortedArrFP[i].year;
+      const cites = citesByAuthor.get(authorId)!;
+      const { numOfDocs } = docsByAuthor.find(({ id }) =>
+        id.toString() == authorId
+      )!;
+
+      csvFile += `${authorId},,, ${cites}, ${numOfDocs}, ${year}\n`;
+    }
+
+    this.saveFile(path, csvFile);
   }
 
-  private authorCollaborationNetwork() {}
+  private authorCollaborationNetwork(docsByAuthor: DocByAuthor[]) {
+    const { data } = this.docs;
+    const networkByAuthor = new Map<string, Set<string>>();
+    const mostImportantAuthors = docsByAuthor
+      .slice(0, 20)
+      .reduce((acc, { id }) => {
+        return acc.add(id.toString());
+      }, new Set<string>());
+
+    for (const { authors } of data) {
+      const importantAuthorsInCurrentDocument = authors
+        .filter((author) => mostImportantAuthors.has(author.id))
+        .map((author) => author.id);
+
+      for (const authorId of importantAuthorsInCurrentDocument) {
+        const network = networkByAuthor.get(authorId) || new Set();
+
+        for (const relatedAuthorId of importantAuthorsInCurrentDocument) {
+          if (authorId == relatedAuthorId) continue;
+          network.add(relatedAuthorId);
+        }
+        networkByAuthor.set(authorId, network);
+      }
+    }
+
+    // create files for gephi
+    const relationTables = new Set<[string, string]>();
+
+    for (const [author, couthors] of networkByAuthor) {
+      const couthorsArr = Array.from(couthors);
+
+      for (const coauthor of couthorsArr) {
+        relationTables.add([author, coauthor]);
+      }
+    }
+
+    // Nodes tables
+    // TODO: the label is selected manually
+    const nodePathFile = `${this.basePath}/nodes.csv`;
+    const mostImportantAuthorsArr = Array.from(mostImportantAuthors);
+    const authorsByNumOfDocs = docsByAuthor
+      .filter((val) => mostImportantAuthorsArr.includes(val.id.toString()));
+
+    let csvNodeFile = "Id,Label,Weight\n";
+    const authors = data
+      .flatMap((doc) => doc.authors)
+      .filter(({ id }) => mostImportantAuthorsArr.includes(id));
+    const cleanedAuthors = authors
+      .filter((author, i) => authors.indexOf(author) == i);
+
+    for (const { id, numOfDocs } of authorsByNumOfDocs) {
+      const weight = this.normalizeNumOfDocs(numOfDocs);
+      const { lastName, firstName } = cleanedAuthors
+        .find((author) => author.id == id.toString())!;
+
+      csvNodeFile += `${id},${lastName + " " + firstName},${weight}\n`;
+    }
+    this.saveFile(nodePathFile, csvNodeFile);
+
+    // Edges tables
+    let csvEdgeFile = "Source,Target,Type\n";
+    const relationTablesArr = Array.from(relationTables);
+    const edgePathFile = `${this.basePath}/edges.csv`;
+
+    for (const [author1, author2] of relationTablesArr) {
+      csvEdgeFile += `${author1},${author2},Undirected\n`;
+    }
+    this.saveFile(edgePathFile, csvEdgeFile);
+  }
+
+  private normalizeNumOfDocs(numOfDocs: number) {
+    const [max, maxLevel] = [29, 3];
+    const result = (numOfDocs / max) * maxLevel;
+    return Math.floor(result);
+  }
+
+  private saveFile(path: string, file: string, append = false) {
+    Deno.writeTextFileSync(path, file, { append });
+  }
 }
 
 export { BibiometricAnalysis };

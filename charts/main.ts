@@ -6,7 +6,7 @@ if (import.meta.main) {
   const confg = new Config();
   const ba = new BibiometricAnalysis(confg);
 
-  // FF for disable or enable diferent process
+  // FFs for disable or enable diferent process
   const { bibliom, inference } = confg.envs;
 
   // TODO: convert the inferences functions in a class

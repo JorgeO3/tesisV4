@@ -3,5 +3,5 @@
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "python.formatting.provider": "none",
-  "deno.enable": true
+  "deno.enable": true,
 }
