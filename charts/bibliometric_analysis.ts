@@ -369,6 +369,7 @@ class BibiometricAnalysis {
 
       csvNodeFile += `${id},${lastName + " " + firstName},${weight}\n`;
     }
+
     this.saveFile(nodePathFile, csvNodeFile);
 
     // Edges tables
